@@ -12,7 +12,7 @@ import { User } from './../../user/entities/user.entity';
 import { OrderItem } from './orderItem.entity';
 
 @Entity()
-export class Order {
+export class CartItem {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -20,12 +20,12 @@ export class Order {
   fullName: string;
 
   @Column({ nullable: false })
-  phone: number;
+  phone: string;
 
   @Column({ nullable: false })
   address: string;
 
-  @Column()
+  @Column({ nullable: true })
   note: string;
 
   @Column({ nullable: false, default: 0 })
@@ -57,12 +57,12 @@ export class Order {
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
   public orderItems!: OrderItem[];
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'timestamp with time zone' })
   paidDate: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
   createdDate: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ type: 'timestamp with time zone', default: () => 'CURRENT_TIMESTAMP' })
   updatedDate: Date;
 }

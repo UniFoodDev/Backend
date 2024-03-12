@@ -30,14 +30,21 @@ export class User {
 
   @Column({ nullable: false })
   @Exclude()
-  password: string;
+  password: string; // password nay ko hash ??
 
   @Column({
-    type: 'set',
+    type: 'enum',
     enum: Role,
-    default: [Role.User],
+    array: true, // Use array for PostgreSQL enums
+    default: [Role.Guest],
   })
   roles: Role[];
+
+  @Column({
+    type: 'boolean',
+    default: false,
+  })
+  isAccountBanned: boolean;
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
@@ -45,9 +52,15 @@ export class User {
   @OneToMany(() => CartItem, (cartItem) => cartItem.user)
   cartItems: CartItem[];
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  }) // Adjusting date columns for PostgreSQL
   createdDate: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({
+    type: 'timestamp with time zone',
+    default: () => 'CURRENT_TIMESTAMP',
+  }) // Adjusting date columns for PostgreSQL
   updatedDate: Date;
 }

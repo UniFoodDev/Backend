@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { AttributeValue } from './../../attribute-value/entities/attribute-value.entity';
 import { OrderItem } from './../../order/entities/orderItem.entity';
+import { CartItem } from './../../cart/entities/cartItem.entity';
 import { Product } from './../../product/entities/product.entity';
 
 @Entity()
@@ -37,4 +38,7 @@ export class Variant {
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.variant)
   public orderItems!: OrderItem[];
+
+  @OneToMany(() => CartItem, (cartItem) => cartItem.variant)
+  public cartItems!: CartItem[];
 }
