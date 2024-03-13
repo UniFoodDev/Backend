@@ -8,7 +8,7 @@ export class CartItem {
   public id!: number;
 
   @Column()
-  public orderId!: number;
+  public cartId!: number;
 
   @Column()
   public variantId!: number;
@@ -19,6 +19,6 @@ export class CartItem {
   @ManyToOne(() => Cart, (cart) => cart.cartItem)
   public cart!: Cart;
 
-  @ManyToOne(() => Variant, (variant) => variant.orderItems)
+  @ManyToOne(() => Variant, (variant) => variant.cartItems)
   public variant!: Variant;
 }

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { PaymentType } from './../../enums/payment-type.enum';
 
 class UserDto {
   @IsInt()
@@ -26,7 +27,7 @@ export class CreateOrderDto {
   fullName: string;
 
   @IsInt()
-  phone: number;
+  phone: string;
 
   @IsString()
   address: string;
@@ -41,8 +42,8 @@ export class CreateOrderDto {
   @IsInt()
   totalPrice: number;
 
-  @IsString()
-  paymentMethod: string;
+  @IsEnum(PaymentType)
+  paymentMethod: PaymentType;
 
   @ValidateNested()
   @Type(() => UserDto)

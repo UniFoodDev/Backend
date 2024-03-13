@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsInt, IsOptional, ValidateNested } from 'class-validator';
 
 class UserDto {
   @IsInt()
@@ -27,6 +27,6 @@ export class CreateCartDto {
   user: UserDto;
 
   @ValidateNested()
-  @Type(() => OrderItemDto)
-  orderItems: OrderItemDto[];
+  @Type(() => CartItemDto)
+  cartItems: CartItemDto[];
 }

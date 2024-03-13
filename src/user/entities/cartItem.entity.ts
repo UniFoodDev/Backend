@@ -2,6 +2,7 @@ import { User } from './user.entity';
 import { Product } from './../../product/entities/product.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
+// remove later
 @Entity()
 export class CartItem {
   @PrimaryGeneratedColumn()
