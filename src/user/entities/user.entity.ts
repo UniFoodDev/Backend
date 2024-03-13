@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { Role } from './../../enums/role.enum';
 import { Order } from './../../order/entities/order.entity';
-import { CartItem } from './cartItem.entity';
 import { Cart } from 'src/cart/entities/cart.entity';
 
 @Entity()
@@ -50,10 +49,6 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.user)
   orders: Order[];
-
-  // remove later and change to cart
-  @OneToMany(() => CartItem, (cartItem) => cartItem.user)
-  cartItems: CartItem[];
 
   @OneToOne(() => Cart, (cart) => cart.user)
   cart: Cart;
