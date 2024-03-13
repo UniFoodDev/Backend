@@ -9,6 +9,12 @@ export class Attribute {
   @Column({ unique: true, nullable: false })
   name: string;
 
+  @Column({ 
+    nullable: false,
+    default: 0
+  })
+  price: number;
+
   @OneToMany(() => AttributeValue, (attributeValue) => attributeValue.attribute)
   public attributeValues!: AttributeValue[];
 }

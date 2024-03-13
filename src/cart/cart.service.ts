@@ -1,20 +1,11 @@
-import { HttpService } from '@nestjs/axios';
 import {
-  HttpStatus,
   Injectable,
-  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createHmac } from 'crypto';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
-import { firstValueFrom } from 'rxjs';
-import { Like, Raw, Repository } from 'typeorm';
-import { CreateCartDto } from './dto/create-cart.dto';
+
+import { Repository } from 'typeorm';
+import { CreateCartDto, UserDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { Cart } from './entities/cart.entity';
 import { CartItem } from './entities/cartItem.entity';
@@ -26,9 +17,9 @@ export class CartService {
     private cartRepo: Repository<Cart>,
     @InjectRepository(CartItem)
     private cartItemsRepo: Repository<CartItem>,
-    private readonly httpService: HttpService,
   ) {}
 
+  // create new cart (call once)
   async create(createCartDto: CreateCartDto) {
     const { cartItems } = createCartDto;
     const cart = await this.cartRepo.save(createCartDto);
@@ -38,14 +29,27 @@ export class CartService {
     return cart;
   }
 
-  async update(id: number, updateCartDto: UpdateCartDto) {
-    const exist = await this.cartRepo.findOneBy({ id });
+  // update cart
+  // need modify later to reduce data size transfered
+  async update(updateCartDto: UpdateCartDto) {
+    const exist = await this.cartRepo.findOneBy({ user: updateCartDto.user });
     if (!exist) {
       throw new NotFoundException('Cart not found.');
     }
-
+    const cartId = exist.id
     const { cartItems } = updateCartDto;
     await this.cartItemsRepo.save(cartItems);
-    return this.cartRepo.save({ id, ...updateCartDto });
+    return this.cartRepo.save({ cartId, ...updateCartDto });
+  }
+
+  // find all the cart items of an user
+  async findAll(user: UserDto) {
+    const cart = await this.cartRepo.findOneBy({ id: user.id })
+    if (!cart) {
+      throw new NotFoundException('Cart not found.');
+    }
+
+    const cartItems = await this.cartItemsRepo.findBy({ cartId: cart.id });
+    return { ...cart, cartItems };
   }
 }

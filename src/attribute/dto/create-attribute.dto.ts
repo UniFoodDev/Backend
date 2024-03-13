@@ -1,4 +1,4 @@
-import { Length, Matches } from 'class-validator';
+import { IsNumber, Length, Matches } from 'class-validator';
 import { nameRegex } from '../../libs/regex';
 
 export class CreateAttributeDto {

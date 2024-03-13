@@ -1,7 +1,7 @@
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, ValidateNested } from 'class-validator';
 
-class UserDto {
+export class UserDto {
   @IsInt()
   id: number;
 }
