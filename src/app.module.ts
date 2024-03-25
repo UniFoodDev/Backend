@@ -10,6 +10,7 @@ import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { VariantModule } from './variant/variant.module';
 import { CartModule } from './cart/cart.module';
+import { WebhookModule } from './webhook/webhook.module';
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { CartModule } from './cart/cart.module';
     AttributeValueModule,
     OrderModule,
     VariantModule,
-    CartModule
+    CartModule,
+    WebhookModule
   ],
 })
 export class AppModule {}
