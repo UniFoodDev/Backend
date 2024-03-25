@@ -9,6 +9,7 @@ import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 import { UserModule } from './user/user.module';
 import { VariantModule } from './variant/variant.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -24,6 +25,10 @@ import { VariantModule } from './variant/variant.module';
       database: process.env.DB_SCHEMA,
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV === 'development',
+      ssl:{
+        require: true, // This will help you. But you will see nwe error
+        rejectUnauthorized: false // This line will fix new error
+      }
     }),
     UserModule,
     AuthModule,
@@ -33,6 +38,7 @@ import { VariantModule } from './variant/variant.module';
     AttributeValueModule,
     OrderModule,
     VariantModule,
+    CartModule
   ],
 })
 export class AppModule {}

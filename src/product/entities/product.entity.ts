@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Category } from './../../category/entities/category.entity';
 import { Image } from './../../image/entities/image.entity';
-import { CartItem } from './../../user/entities/cartItem.entity';
 import { Variant } from './../../variant/entities/variant.entity';
 
 @Entity()
@@ -46,9 +45,6 @@ export class Product {
 
   @OneToMany(() => Variant, (variant) => variant.product)
   variants: Variant[];
-
-  @OneToMany(() => CartItem, (cartItem) => cartItem.product)
-  public cartItems!: CartItem[];
 
   @CreateDateColumn()
   createdDate: Date;
