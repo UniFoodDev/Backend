@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Body, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class WebhookService {
-    async webhook(){
-        return 'Webhook received';
+
+    async webhook(data: any){
+        return "The data is " + data.message;
     }
 }
