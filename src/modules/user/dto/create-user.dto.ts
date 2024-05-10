@@ -1,4 +1,4 @@
-import { Length, Matches } from 'class-validator';
+import { Length, Matches, IsEmail } from 'class-validator';
 import { passwordRegex, usernameRegex } from '../../../libs/regex';
 
 export class CreateUserDto {
@@ -8,6 +8,9 @@ export class CreateUserDto {
       'Username must contains at least 6 letter, no space, no special letters',
   })
   username: string;
+
+  @IsEmail()
+  email: string;
 
   @Length(6, 32)
   @Matches(passwordRegex, {

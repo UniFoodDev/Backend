@@ -4,19 +4,15 @@ import {
   CreateDateColumn,
   Entity,
   OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from '../../../enums/role.enum';
 import { Order } from '../../order/entities/order.entity';
 import { Cart } from 'src/modules/cart/entities/cart.entity';
+import { AbstractEntity } from '../../../database';
 
 @Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class User extends AbstractEntity {
   @Column({ nullable: true })
   fullName: string;
 
@@ -26,12 +22,23 @@ export class User {
   @Column({ nullable: true })
   address: string;
 
-  @Column({ unique: true, nullable: false })
+  @Column({ nullable: true })
+  email: string;
+
+  @Column({ nullable: false })
   username: string;
 
   @Column({ nullable: false })
   @Exclude()
-  password: string; // password nay ko hash ??
+  password: string;
+
+  @Column({ default: false })
+  @Exclude()
+  passwordCode: string;
+
+  @Column({ nullable: true })
+  @Exclude()
+  passwordCodeExpired: Date;
 
   @Column({
     type: 'enum',

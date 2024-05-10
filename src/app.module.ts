@@ -13,6 +13,7 @@ import { CartModule } from './modules/cart/cart.module';
 import { WebhookModule } from './modules/webhook/webhook.module';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ConfigService } from '@nestjs/config';
     VariantModule,
     CartModule,
     WebhookModule,
+    MailModule,
   ],
 })
 export class AppModule {}

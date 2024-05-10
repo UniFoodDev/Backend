@@ -1,5 +1,5 @@
 import { RolesGuard } from '../../guards/roles.guard';
-import { AccessTokenGuard } from '../auth/access-token.guard';
+import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { Role } from '../../enums/role.enum';
 import {
   Body,

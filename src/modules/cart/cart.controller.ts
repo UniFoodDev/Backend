@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from '../../decorator/role.decorator';
-import { AccessTokenGuard } from '../auth/access-token.guard';
+import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { Role } from '../../enums/role.enum';
 import { RolesGuard } from '../../guards/roles.guard';
 import { CreateCartDto } from './dto/create-cart.dto';

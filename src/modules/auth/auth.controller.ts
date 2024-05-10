@@ -1,21 +1,42 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Controller, Post, Request, UseGuards, Body } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './local-auth.guard';
-import { RefreshTokenGuard } from './refresh-token.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
+import { RefreshTokenGuard } from './guards/refresh-token.guard';
+import { HttpCode, HttpStatus } from '@nestjs/common';
+import {
+  LoginDto,
+  RegisterDto,
+  ForgotPasswordDto,
+  ResetPassworDto,
+} from './dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  @UseGuards(LocalAuthGuard)
+  // @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@Request() req) {
-    return this.authService.login(req.user);
+  async login(@Body() loginDto: LoginDto) {
+    return this.authService.login(loginDto);
+  }
+  @Post('register')
+  @HttpCode(HttpStatus.OK)
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
   }
 
   @UseGuards(RefreshTokenGuard)
   @Post('refreshToken')
   async refresh(@Request() req) {
     return this.authService.refresh(req.user);
+  }
+  @Post('forgotPassword')
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    return this.authService.forgotPassword(forgotPasswordDto);
+  }
+
+  @Post('resetPassword')
+  async resetPassword(@Body() resetPasswordDto: ResetPassworDto) {
+    return this.authService.resetPassword(resetPasswordDto);
   }
 }
