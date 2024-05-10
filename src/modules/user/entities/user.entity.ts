@@ -32,12 +32,10 @@ export class User extends AbstractEntity {
   @Exclude()
   password: string;
 
-  @Column({ default: false })
-  @Exclude()
+  @Column({ nullable: true })
   passwordCode: string;
 
   @Column({ nullable: true })
-  @Exclude()
   passwordCodeExpired: Date;
 
   @Column({

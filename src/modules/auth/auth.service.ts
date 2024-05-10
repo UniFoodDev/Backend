@@ -133,8 +133,8 @@ export class AuthService {
       const code = crypto.randomInt(100000, 1000000);
       const hashCode = await bcrypt.hash(code.toString(), 10);
       user.passwordCode = hashCode;
+      console.log('1: ', hashCode);
       user.passwordCodeExpired = new Date(Date.now() + 5 * 60000);
-      console.log(user.email, code);
       await Promise.all([
         this.userService.save(user),
         this.mailService.sendForgotPwdEmail({
@@ -146,7 +146,7 @@ export class AuthService {
       ]);
       return {
         status: 200,
-        message: 'Gui ma xac nhan thanh cong',
+        message: 'Send confirmation successfully.',
       };
     } catch (e) {}
   }
@@ -154,8 +154,28 @@ export class AuthService {
     try {
       const user = await this.userService.findByEmail(resetPassworDto.email);
       const code = 'Uni' + crypto.randomInt(100000, 1000000);
+      const isMatch = await bcrypt.compare(
+        resetPassworDto.code.toString(),
+        user.passwordCode,
+      );
+      console.log('2', user.passwordCode);
+      console.log(isMatch);
+      if (!isMatch) {
+        return {
+          status: 401,
+          message: 'Code is incorrect',
+        };
+      }
+      if (Date.now() >= user.passwordCodeExpired.getTime()) {
+        return {
+          status: 401,
+          message: 'The confirmation code has expired',
+        };
+      }
       const hashCode = await bcrypt.hash(code, 10);
       user.password = hashCode;
+      user.passwordCode = undefined;
+      user.passwordCodeExpired = undefined;
       await Promise.all([
         this.userService.save(user),
         this.mailService.sendResetPwdEmail({
