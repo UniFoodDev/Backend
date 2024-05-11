@@ -69,6 +69,20 @@ export class AuthService {
           message: 'AUTH::EMAIL_ALREADY_EXISTS',
         };
       }
+      try {
+        await this.mailService.sendRegisterEmail({
+          to: registerDto.email,
+          context: {
+            name: registerDto.username,
+          },
+        });
+      } catch (e) {
+        console.log(e);
+        return {
+          status: 401,
+          message: 'AUTH::EMAIL_IS_NOT_VALID',
+        };
+      }
       const newUser = await this.userService.create(registerDto);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { password, ...result } = newUser;
