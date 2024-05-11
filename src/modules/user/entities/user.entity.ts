@@ -41,8 +41,8 @@ export class User extends AbstractEntity {
   @Column({
     type: 'enum',
     enum: Role,
-    array: true, // Use array for PostgreSQL enums
-    default: [Role.Guest],
+    array: true,
+    default: [Role.User],
   })
   roles: Role[];
 
@@ -61,12 +61,12 @@ export class User extends AbstractEntity {
   @CreateDateColumn({
     type: 'timestamp with time zone',
     default: () => 'CURRENT_TIMESTAMP',
-  }) // Adjusting date columns for PostgreSQL
+  })
   createdDate: Date;
 
   @UpdateDateColumn({
     type: 'timestamp with time zone',
     default: () => 'CURRENT_TIMESTAMP',
-  }) // Adjusting date columns for PostgreSQL
+  })
   updatedDate: Date;
 }
