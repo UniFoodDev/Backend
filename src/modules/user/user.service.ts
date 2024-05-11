@@ -29,10 +29,6 @@ export class UserService {
     private usersRepository: Repository<User>,
   ) {}
   async create(createUserDto: CreateUserDto) {
-    const exist = await this.usersRepository.findOneBy({
-      username: createUserDto.username,
-    });
-    if (exist) throw new BadRequestException('username already exist');
     const hashedPassword = await bcrypt.hash(
       createUserDto.password,
       saltOrRounds,
@@ -52,13 +48,11 @@ export class UserService {
       username: createEmployeeDto.username,
     });
     if (exist) throw new BadRequestException('username already exist');
-
     const hashedPassword = await bcrypt.hash(
       createEmployeeDto.password,
       saltOrRounds,
     );
     createEmployeeDto.password = hashedPassword;
-
     return this.usersRepository.save(createEmployeeDto).then(() => ({
       statusCode: HttpStatus.CREATED,
       message: 'Register success',

@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsString, Matches } from 'class-validator';
+import { IsEmail, IsEnum, IsString, Matches } from 'class-validator';
 
 import { passwordRegex } from '../../../libs/regex';
+import { Role } from '../../../enums/role.enum';
 
 export class RegisterDto {
   @ApiProperty()
@@ -22,4 +23,7 @@ export class RegisterDto {
     message: 'USER::NAME_IS_REQUIRED',
   })
   username: string;
+
+  @IsEnum(Role, { each: true })
+  roles: Role[];
 }

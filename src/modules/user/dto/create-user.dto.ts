@@ -1,5 +1,6 @@
-import { Length, Matches, IsEmail } from 'class-validator';
+import { Length, Matches, IsEmail, IsEnum } from 'class-validator';
 import { passwordRegex, usernameRegex } from '../../../libs/regex';
+import { Role } from '../../../enums/role.enum';
 
 export class CreateUserDto {
   @Length(6, 32)
@@ -17,4 +18,7 @@ export class CreateUserDto {
     message: 'Password must contains at least 1 number and uppercase letter',
   })
   password: string;
+
+  @IsEnum(Role, { each: true })
+  roles: Role[];
 }
