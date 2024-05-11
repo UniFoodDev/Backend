@@ -9,7 +9,9 @@ import {
   ForgotPasswordDto,
   ResetPassworDto,
 } from './dto';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -30,6 +32,7 @@ export class AuthController {
   async refresh(@Request() req) {
     return this.authService.refresh(req.user);
   }
+
   @Post('forgotPassword')
   async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);

@@ -21,7 +21,6 @@ async function bootstrap() {
   const port = process.env.APP_PORT || 3000;
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
-
   const config = new DocumentBuilder()
     .setTitle('NestJS API')
     .setDescription('API Documentation')

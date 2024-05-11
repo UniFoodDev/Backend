@@ -24,6 +24,7 @@ export class RegisterDto {
   })
   username: string;
 
+  @ApiProperty()
   @IsEnum(Role, { each: true })
   roles: Role[];
 }

@@ -6,6 +6,7 @@ export class ResetPassworDto {
   @IsEmail({}, { message: 'USER::EMAIL_IS_INVALID' })
   email: string;
 
+  @ApiProperty()
   @IsNumber(
     {},
     {

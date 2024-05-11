@@ -164,6 +164,7 @@ export class AuthService {
       };
     } catch (e) {}
   }
+
   async resetPassword(resetPassworDto: ResetPassworDto) {
     try {
       const user = await this.userService.findByEmail(resetPassworDto.email);

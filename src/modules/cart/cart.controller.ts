@@ -41,7 +41,6 @@ export class CartController {
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Get('items')
   findAll(@Query('userId') userId: number): Promise<Cart> {
-    return this.cartService.findAll({ id : userId});
+    return this.cartService.findAll({ id: userId });
   }
 }
-
