@@ -22,9 +22,10 @@ async function bootstrap() {
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   const config = new DocumentBuilder()
+    .addBearerAuth({ type: 'http', scheme: 'bearer' })
     .setTitle('NestJS API')
     .setDescription('API Documentation')
-    .setVersion('1.0')
+    .setVersion('3.0')
     .addTag('API')
     .build();
   const document = SwaggerModule.createDocument(app, config);

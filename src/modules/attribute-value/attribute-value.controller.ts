@@ -15,6 +15,7 @@ import { Roles } from '../../decorator/role.decorator';
 import { AttributeValueService } from './attribute-value.service';
 import { CreateAttributeValueDto } from './dto/create-attribute-value.dto';
 import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 // @Controller('attribute-value')
 // export class AttributeValueController {
@@ -49,6 +50,7 @@ import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
 //   }
 // }
 
+@ApiTags('attribute-value')
 @Controller('admin/attribute-value')
 @Roles(Role.Admin, Role.Manager)
 @UseGuards(AccessTokenGuard, RolesGuard)

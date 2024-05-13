@@ -50,6 +50,7 @@ import { UpdateAttributeDto } from './dto/update-attribute.dto';
 //   }
 // }
 
+@Controller('attribute')
 @Controller('admin/attribute')
 @Roles(Role.Admin, Role.Manager)
 @UseGuards(AccessTokenGuard, RolesGuard)

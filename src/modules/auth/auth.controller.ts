@@ -9,7 +9,7 @@ import {
   ForgotPasswordDto,
   ResetPassworDto,
 } from './dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -27,6 +27,7 @@ export class AuthController {
     return this.authService.register(registerDto);
   }
 
+  @ApiBearerAuth('Bearer')
   @UseGuards(RefreshTokenGuard)
   @Post('refreshToken')
   async refresh(@Request() req) {
