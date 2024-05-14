@@ -18,7 +18,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  const port = process.env.APP_PORT || 3000;
+  const port = process.env.APP_PORT;
   app.use(json({ limit: '50mb' }));
   app.use(urlencoded({ extended: true, limit: '50mb' }));
   const config = new DocumentBuilder()

@@ -1,13 +1,12 @@
 import { Exclude } from 'class-transformer';
 import {
   CreateDateColumn,
-  DeleteDateColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 export abstract class AbstractEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Exclude({ toPlainOnly: true })
@@ -21,10 +20,4 @@ export abstract class AbstractEntity {
     type: 'timestamptz',
   })
   updatedAt: Date;
-
-  @Exclude({ toPlainOnly: true })
-  @DeleteDateColumn({
-    type: 'timestamptz',
-  })
-  deletedAt?: Date;
 }

@@ -10,6 +10,9 @@ export class CreateAttributeValueDto {
   @Length(1, 50)
   value: string;
 
+  @Length(1, 50)
+  price: string;
+
   @ValidateNested()
   @Type(() => AttributeDto)
   attribute: AttributeDto;

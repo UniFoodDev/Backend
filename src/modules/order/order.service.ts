@@ -32,23 +32,23 @@ export class OrderService {
   ) {}
 
   async create(createOrderDto: CreateOrderDto) {
-    const { orderItems } = createOrderDto;
-    const order = await this.ordersRepo.save(createOrderDto);
-
-    const newOrderItems = orderItems.map((o) => ({ ...o, orderId: order.id }));
-    await this.orderItemsRepo.save(newOrderItems);
-    return order;
+    // const { orderItems } = createOrderDto;
+    // const order = await this.ordersRepo.save(createOrderDto);
+    //
+    // const newOrderItems = orderItems.map((o) => ({ ...o, orderId: order.id }));
+    // await this.orderItemsRepo.save(newOrderItems);
+    // return order;
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto) {
-    const exist = await this.ordersRepo.findOneBy({ id });
-    if (!exist) {
-      throw new NotFoundException('Order not found.');
-    }
-
-    const { orderItems } = updateOrderDto;
-    await this.orderItemsRepo.save(orderItems);
-    return this.ordersRepo.save({ id, ...updateOrderDto });
+    // const exist = await this.ordersRepo.findOneBy({ id });
+    // if (!exist) {
+    //   throw new NotFoundException('Order not found.');
+    // }
+    //
+    // const { orderItems } = updateOrderDto;
+    // await this.orderItemsRepo.save(orderItems);
+    // return this.ordersRepo.save({ id, ...updateOrderDto });
   }
 
   async updateOrderStatus(id: number, updateOrderStatus: UpdateOrderStatusDto) {
@@ -82,9 +82,7 @@ export class OrderService {
         orderItems: true,
         user: true,
       },
-      order: {
-        updatedDate: 'DESC',
-      },
+      order: {},
     });
   }
 
@@ -126,7 +124,6 @@ export class OrderService {
         orderItems: {
           variant: {
             product: true,
-            attributeValues: true,
           },
         },
       },
@@ -143,7 +140,6 @@ export class OrderService {
             product: {
               images: true,
             },
-            attributeValues: true,
           },
         },
       },

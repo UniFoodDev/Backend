@@ -1,16 +1,14 @@
 import {
   Column,
   Entity,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { AttributeValue } from '../../attribute-value/entities/attribute-value.entity';
 import { OrderItem } from '../../order/entities/orderItem.entity';
 import { CartItem } from '../../cart/entities/cartItem.entity';
 import { Product } from '../../product/entities/product.entity';
+import { AttributeValueVariant } from '../../attribute-value/entities/attribute_value_variant.entity';
 
 @Entity()
 export class Variant {
@@ -30,15 +28,15 @@ export class Variant {
   })
   product: Product;
 
-  @ManyToMany(() => AttributeValue)
-  @JoinTable({
-    name: 'variant_attribute_value',
-  })
-  attributeValues: AttributeValue[];
-
   @OneToMany(() => OrderItem, (orderItem) => orderItem.variant)
   public orderItems!: OrderItem[];
 
   @OneToMany(() => CartItem, (cartItem) => cartItem.variant)
   public cartItems!: CartItem[];
+
+  @OneToMany(
+    () => AttributeValueVariant,
+    (attributeValueVariant) => attributeValueVariant.variant,
+  )
+  attributeValueVariant: AttributeValueVariant[];
 }

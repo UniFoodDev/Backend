@@ -14,10 +14,10 @@ export class OrderItem {
   public variantId!: number;
 
   @Column({ nullable: false })
-  orderedPrice: number;
+  orderedPrice: string;
 
   @Column({ nullable: false })
-  orderedQuantity: number;
+  orderedQuantity: string;
 
   @ManyToOne(() => Order, (order) => order.orderItems)
   public order!: Order;

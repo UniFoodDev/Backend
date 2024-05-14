@@ -67,9 +67,6 @@ export class ProductService {
         images: true,
         variants: true,
       },
-      order: {
-        updatedDate: 'DESC',
-      },
     });
   }
 
@@ -79,12 +76,9 @@ export class ProductService {
   ): Promise<Pagination<Product>> {
     return paginate<Product>(this.productRepo, options, {
       where: {
-        isActive: true,
         name: Like(`%${name}%`),
       },
-      order: {
-        createdDate: 'DESC',
-      },
+      order: {},
       relations: {
         category: true,
         images: true,
@@ -95,13 +89,8 @@ export class ProductService {
 
   async findNew(options: IPaginationOptions): Promise<Pagination<Product>> {
     return paginate<Product>(this.productRepo, options, {
-      where: {
-        isNew: true,
-        isActive: true,
-      },
-      order: {
-        createdDate: 'DESC',
-      },
+      where: {},
+      order: {},
       relations: {
         images: true,
         variants: true,
@@ -111,13 +100,8 @@ export class ProductService {
 
   async findPopular(options: IPaginationOptions): Promise<Pagination<Product>> {
     return paginate<Product>(this.productRepo, options, {
-      where: {
-        isPopular: true,
-        isActive: true,
-      },
-      order: {
-        createdDate: 'DESC',
-      },
+      where: {},
+      order: {},
       relations: {
         images: true,
         variants: true,
@@ -137,7 +121,7 @@ export class ProductService {
 
   async findByIds(ids: number[]): Promise<Product[]> {
     const exist = await this.productRepo.find({
-      where: { id: In(ids), isActive: true },
+      where: { id: In(ids) },
       relations: {
         category: true,
         images: true,
@@ -157,11 +141,7 @@ export class ProductService {
       relations: {
         category: true,
         images: true,
-        variants: {
-          attributeValues: {
-            attribute: true,
-          },
-        },
+        variants: {},
       },
     });
     if (!exist) {
@@ -171,17 +151,13 @@ export class ProductService {
     return exist;
   }
 
-  async findBySlugForUser(slug: string): Promise<Product> {
+  async findBySlugForUser(plug: string): Promise<Product> {
     const exist = await this.productRepo.findOne({
-      where: { slug, isActive: true },
+      where: {},
       relations: {
         category: true,
         images: true,
-        variants: {
-          attributeValues: {
-            attribute: true,
-          },
-        },
+        variants: {},
       },
     });
     if (!exist) {
@@ -191,21 +167,14 @@ export class ProductService {
     return exist;
   }
 
-  async findByCategoryForUser(slug: string): Promise<Product[]> {
+  async findByCategoryForUser(): Promise<Product[]> {
     return await this.productRepo.find({
       where: {
-        category: {
-          slug,
-        },
-        isActive: true,
+        category: {},
       },
       relations: {
         images: true,
-        variants: {
-          attributeValues: {
-            attribute: true,
-          },
-        },
+        variants: {},
       },
     });
   }
@@ -216,9 +185,7 @@ export class ProductService {
     });
     if (name) throw new BadRequestException('Name already exist');
 
-    const slug = await this.productRepo.findOneBy({
-      slug: createProductDto.slug,
-    });
+    const slug = await this.productRepo.findOneBy({});
     if (slug) throw new BadRequestException('Slug already exist');
 
     const { images, variants } = createProductDto;
@@ -260,8 +227,7 @@ export class ProductService {
     const slug = await this.productRepo
       .createQueryBuilder('product')
       .where('product.slug = :slugUpdate and product.slug != :slugExist', {
-        slugUpdate: updateProductDto.slug,
-        slugExist: exist.slug,
+        // slugUpdate: updateProductDto.slug,
       })
       .getOne();
     if (slug) throw new BadRequestException('Slug already exist');
@@ -293,7 +259,7 @@ export class ProductService {
       throw new NotFoundException('Product not found.');
     }
 
-    return this.productRepo.delete({ id }).then((res) => ({
+    return this.productRepo.delete({ id }).then(() => ({
       statusCode: HttpStatus.OK,
       message: 'Delete success',
     }));

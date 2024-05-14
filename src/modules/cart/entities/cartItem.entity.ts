@@ -14,6 +14,9 @@ export class CartItem {
   public variantId!: number;
 
   @Column({ nullable: false })
+  orderedPrice: number;
+
+  @Column({ nullable: false })
   orderedQuantity: number;
 
   @ManyToOne(() => Cart, (cart) => cart.cartItem)

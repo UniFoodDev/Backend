@@ -1,15 +1,10 @@
 import { Exclude } from 'class-transformer';
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Role } from '../../../enums/role.enum';
 import { Order } from '../../order/entities/order.entity';
 import { Cart } from 'src/modules/cart/entities/cart.entity';
 import { AbstractEntity } from '../../../database';
+import { Address } from './address.entity';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -58,15 +53,6 @@ export class User extends AbstractEntity {
   @OneToMany(() => Cart, (cart) => cart.user)
   cart: Cart[];
 
-  @CreateDateColumn({
-    type: 'timestamp with time zone',
-    default: () => 'CURRENT_TIMESTAMP',
-  }) // Adjusting date columns for PostgreSQL
-  createdDate: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp with time zone',
-    default: () => 'CURRENT_TIMESTAMP',
-  }) // Adjusting date columns for PostgreSQL
-  updatedDate: Date;
+  @OneToMany(() => Address, (address) => address.user)
+  addresses: Address[];
 }

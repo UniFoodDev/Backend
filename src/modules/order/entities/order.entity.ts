@@ -11,12 +11,10 @@ import { OrderStatus } from '../../../enums/orderStatus.enum';
 import { User } from '../../user/entities/user.entity';
 import { OrderItem } from './orderItem.entity';
 import { PaymentType } from 'src/enums/payment-type.enum';
+import { AbstractEntity } from '../../../database';
 
 @Entity()
-export class Order {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Order extends AbstractEntity {
   @Column({ nullable: false })
   fullName: string;
 
@@ -43,17 +41,17 @@ export class Order {
   @Column({ nullable: false })
   totalPrice: number;
 
-  @Column({ 
-    nullable: false, 
-    default: [PaymentType.COD],     
-    type: 'enum', 
-    enum: PaymentType
+  @Column({
+    nullable: false,
+    default: [PaymentType.COD],
+    type: 'enum',
+    enum: PaymentType,
   })
   paymentMethod: PaymentType;
 
   @Column({
     nullable: false,
-    default: false
+    default: false,
   })
   isPaid: boolean;
 
@@ -65,16 +63,4 @@ export class Order {
 
   @Column({ nullable: true, type: 'timestamp with time zone' })
   paidDate: Date;
-
-  @CreateDateColumn({
-    type: 'timestamp with time zone',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  createdDate: Date;
-
-  @UpdateDateColumn({
-    type: 'timestamp with time zone',
-    default: () => 'CURRENT_TIMESTAMP',
-  })
-  updatedDate: Date;
 }

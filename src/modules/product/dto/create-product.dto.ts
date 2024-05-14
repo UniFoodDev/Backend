@@ -8,7 +8,7 @@ import {
   Matches,
   ValidateNested,
 } from 'class-validator';
-import { nameRegex, slugRegex } from '../../../libs/regex';
+import { nameRegex } from '../../../libs/regex';
 
 class CategoryDto {
   @IsInt()
@@ -61,10 +61,10 @@ export class CreateProductDto {
   })
   name: string;
 
-  @Matches(slugRegex, {
-    message: 'Slug is not valid',
-  })
-  slug: string;
+  // @Matches(slugRegex, {
+  //   message: 'Slug is not valid',
+  // })
+  // slug: string;
 
   @IsString()
   description: string;

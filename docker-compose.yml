@@ -6,7 +6,7 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_DB: uni
+      POSTGRES_DB: test
       POSTGRES_USER: dev
       POSTGRES_PASSWORD: unifood
     volumes:

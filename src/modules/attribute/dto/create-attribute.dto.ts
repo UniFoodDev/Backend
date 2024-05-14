@@ -1,4 +1,4 @@
-import { IsNumber, Length, Matches } from 'class-validator';
+import { IsBoolean, Length, Matches } from 'class-validator';
 import { nameRegex } from '../../../libs/regex';
 
 export class CreateAttributeDto {
@@ -7,4 +7,10 @@ export class CreateAttributeDto {
     message: 'name must contains at least 2 letter, no special letters',
   })
   name: string;
+
+  @IsBoolean()
+  multiSelect: boolean;
+
+  @IsBoolean()
+  required: boolean;
 }

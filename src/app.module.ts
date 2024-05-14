@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AttributeValueModule } from './modules/attribute-value/attribute-value.module';
 import { AttributeModule } from './modules/attribute/attribute.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { CategoryModule } from './modules/category/category.module';
@@ -14,6 +13,9 @@ import { WebhookModule } from './modules/webhook/webhook.module';
 import { join } from 'path';
 import { ConfigService } from '@nestjs/config';
 import { MailModule } from './modules/mail/mail.module';
+import { TagModule } from './modules/tag/tag.module';
+import { AttributeValueModule } from './modules/attribute-value/attribute-value.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -44,12 +46,15 @@ import { MailModule } from './modules/mail/mail.module';
     CategoryModule,
     ProductModule,
     AttributeModule,
-    AttributeValueModule,
     OrderModule,
     VariantModule,
     CartModule,
     WebhookModule,
     MailModule,
+    TagModule,
+    AttributeModule,
+    AttributeValueModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

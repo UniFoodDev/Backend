@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AttributeAdminController } from './attribute.controller';
+import { AttributeController } from './attribute.controller';
 import { AttributeService } from './attribute.service';
 import { Attribute } from './entities/attribute.entity';
+import { AttributeProduct } from './entities/attribute_product.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Attribute])],
-  controllers: [AttributeAdminController],
+  imports: [TypeOrmModule.forFeature([Attribute, AttributeProduct])],
+  controllers: [AttributeController],
   providers: [AttributeService],
   exports: [AttributeService],
 })

@@ -5,10 +5,7 @@ import { CategoryModule } from '../category/category.module';
 import { Image } from '../image/entities/image.entity';
 import { Variant } from '../variant/entities/variant.entity';
 import { Product } from './entities/product.entity';
-import {
-  ProductAdminController,
-  ProductController,
-} from './product.controller';
+import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
 
 @Module({
@@ -17,7 +14,7 @@ import { ProductService } from './product.service';
     AttributeModule,
     CategoryModule,
   ],
-  controllers: [ProductController, ProductAdminController],
+  controllers: [ProductController],
   providers: [ProductService],
   exports: [ProductService],
 })

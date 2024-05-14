@@ -1,5 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
+import { Category } from '../../category/entities/category.entity';
 
 @Entity()
 export class Image {
@@ -18,4 +19,11 @@ export class Image {
     orphanedRowAction: 'delete',
   })
   product: Product;
+
+  @ManyToOne(() => Category, (category) => category.images, {
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  category: Category;
 }

@@ -10,20 +10,22 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from '../../decorator/role.decorator';
+import { Role } from '../../enums';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
-import { Role } from '../../enums/role.enum';
 import { RolesGuard } from '../../guards/roles.guard';
-import { AttributeService } from './attribute.service';
-import { CreateAttributeDto } from './dto/create-attribute.dto';
-import { UpdateAttributeDto } from './dto/update-attribute.dto';
+import { AttributeService } from '../attribute/attribute.service';
+import { CreateAttributeDto } from '../attribute/dto/create-attribute.dto';
+import { UpdateAttributeDto } from '../attribute/dto/update-attribute.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('Attribute')
-@Controller('attribute')
-export class AttributeController {
+@ApiTags('Admin Attribute')
+@Controller('admin/attribute')
+@Roles(Role.Admin, Role.Manager, Role.Employee)
+@UseGuards(AccessTokenGuard, RolesGuard)
+export class AttributeAdminController {
   constructor(private readonly attributeService: AttributeService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createAttributeDto: CreateAttributeDto) {
     return this.attributeService.create(createAttributeDto);
   }

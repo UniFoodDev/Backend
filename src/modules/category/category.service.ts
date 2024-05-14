@@ -24,7 +24,7 @@ export class CategoryService {
     if (name) throw new BadRequestException('Name already exist');
 
     const slug = await this.categoriesRepository.findOneBy({
-      slug: createCategoryDto.slug,
+      // slug: createCategoryDto.slug,
     });
     if (slug) throw new BadRequestException('Slug already exist');
 
@@ -41,14 +41,17 @@ export class CategoryService {
   findAllForUser(): Promise<Category[]> {
     return this.categoriesRepository.find({
       where: {
-        isActive: true,
+        // isActive: true,
       },
     });
   }
 
   async findBySlugForUser(slug: string) {
     const exist = await this.categoriesRepository.findOne({
-      where: { slug, isActive: true },
+      where: {
+        // slug,
+        // isActive: true,
+      },
     });
     if (!exist) {
       throw new NotFoundException('Category not found.');
@@ -86,7 +89,7 @@ export class CategoryService {
       .createQueryBuilder('category')
       .where('category.slug = :slugUpdate and category.slug != :slugExist', {
         slugUpdate: updateCategoryDto.slug,
-        slugExist: exist.slug,
+        // slugExist: exist.slug,
       })
       .getOne();
     if (slug) throw new BadRequestException('Slug already exist');

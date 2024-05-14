@@ -1,22 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { Product } from '../../product/entities/product.entity';
+import { AbstractEntity } from '../../../database';
+import { Image } from '../../image/entities/image.entity';
 
 @Entity()
-export class Category {
-  @PrimaryGeneratedColumn()
-  id: number;
-
+export class Category extends AbstractEntity {
   @Column({ unique: true, nullable: false })
   name: string;
-
-  @Column({ unique: true, nullable: false })
-  slug: string;
 
   @Column({ nullable: true })
   description: string;
 
-  @Column({ nullable: false, default: false })
-  isActive: boolean;
+  @OneToMany(() => Image, (image) => image.category)
+  images: Image[];
 
   @OneToMany(() => Product, (product) => product.category)
   products: Product[];

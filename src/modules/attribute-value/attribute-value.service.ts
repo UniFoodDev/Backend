@@ -24,69 +24,75 @@ export class AttributeValueService {
     return this.attributeValuesRepository
       .save(createAttributeValueDto)
       .then((res) => ({
-        statusCode: HttpStatus.CREATED,
+        status: 201,
         message: 'Register success',
       }));
   }
 
-  findAll() {
-    return this.attributeValuesRepository.find();
+  async findAll() {
+    const attributes = await this.attributeValuesRepository.find();
+    return {
+      status: 200,
+      message: 'Success',
+      attributes,
+    };
   }
 
   async findOne(id: number) {
     const exist = await this.attributeValuesRepository.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Not found.');
+      return {
+        status: 404,
+        message: 'Not found.',
+      };
     }
-
-    return exist;
+    return {
+      status: 200,
+      message: 'Success',
+      exist,
+    };
   }
 
   async update(id: number, updateAttributeValueDto: UpdateAttributeValueDto) {
     const exist = await this.attributeValuesRepository.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Not found.');
+      return {
+        status: 404,
+        message: 'Not found.',
+      };
     }
-
     return this.attributeValuesRepository
       .update(id, updateAttributeValueDto)
       .then((res) => ({
-        statusCode: HttpStatus.OK,
+        status: 200,
         message: 'Update success',
       }))
-      .catch((err) => console.log(err));
+      .catch((err) => ({
+        status: 500,
+        message: 'Internal server error',
+      }));
   }
 
   async remove(id: number) {
     const exist = await this.attributeValuesRepository.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Not found.');
+      return {
+        status: 404,
+        message: 'Not found.',
+      };
     }
-
-    const existVariants = await this.variantRepo.findBy({
-      attributeValues: { id },
-    });
-
-    if (existVariants.length > 0) {
-      throw new InternalServerErrorException(
-        "Can't delete because it's linked",
-      );
-    }
-
     try {
       return await this.attributeValuesRepository
         .delete({ id })
         .then((res) => ({
-          statusCode: HttpStatus.OK,
+          status: 200,
           message: 'Delete success',
         }));
     } catch (error) {
-      if (error.errno === 1451) {
-        throw new InternalServerErrorException(
-          "Can't delete because it's linked",
-        );
-      }
-      throw new InternalServerErrorException();
+      return {
+        status: 500,
+        message: 'Internal server error',
+      };
     }
   }
 }

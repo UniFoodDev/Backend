@@ -19,15 +19,32 @@ export class AttributeService {
   ) {}
 
   async create(createAttributeDto: CreateAttributeDto) {
-    const name = await this.attributesRepository.findOneBy({
-      name: createAttributeDto.name,
-    });
-    if (name) throw new BadRequestException('Name already exist');
-
-    return this.attributesRepository.save(createAttributeDto).then((res) => ({
-      statusCode: HttpStatus.CREATED,
-      message: 'Register success',
-    }));
+    try {
+      const name = await this.attributesRepository.findOneBy({
+        name: createAttributeDto.name,
+      });
+      console.log(createAttributeDto.name);
+      if (name) {
+        return {
+          status: 401,
+          message: 'Attribute already exist',
+        };
+      }
+      await this.attributesRepository.save(
+        this.attributesRepository.create(
+          createAttributeDto as unknown as Attribute,
+        ),
+      );
+      return {
+        status: 201,
+        message: 'Register success',
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Register failed',
+      };
+    }
   }
 
   findAll(): Promise<Attribute[]> {
@@ -74,21 +91,21 @@ export class AttributeService {
   async remove(id: number) {
     const exist = await this.attributesRepository.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Product not found.');
+      return {
+        status: 404,
+        message: 'Attribute not found.',
+      };
     }
-
     try {
-      return await this.attributesRepository.delete({ id }).then((res) => ({
-        statusCode: HttpStatus.OK,
+      return await this.attributesRepository.delete({ id }).then(() => ({
+        status: 200,
         message: 'Delete success',
       }));
     } catch (error) {
-      if (error.errno === 1451) {
-        throw new InternalServerErrorException(
-          "Can't delete because it's linked",
-        );
-      }
-      throw new InternalServerErrorException();
+      return {
+        status: 500,
+        message: 'Delete failed',
+      };
     }
   }
 }

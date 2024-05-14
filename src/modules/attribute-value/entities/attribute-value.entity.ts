@@ -1,12 +1,12 @@
 import {
   Column,
   Entity,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { Attribute } from '../../attribute/entities/attribute.entity';
-import { Variant } from '../../variant/entities/variant.entity';
+import { AttributeValueVariant } from './attribute_value_variant.entity';
 
 @Entity()
 export class AttributeValue {
@@ -16,6 +16,9 @@ export class AttributeValue {
   @Column({ nullable: false })
   value: string;
 
+  @Column({ nullable: false })
+  price: string;
+
   @ManyToOne(() => Attribute, (attribute) => attribute.attributeValues, {
     cascade: true,
     onDelete: 'CASCADE',
@@ -23,6 +26,9 @@ export class AttributeValue {
   })
   attribute: Attribute;
 
-  @ManyToMany(() => Variant)
-  variants: Variant[];
+  @OneToMany(
+    () => AttributeValueVariant,
+    (attributeValueVariant) => attributeValueVariant.attributeValue,
+  )
+  attributeValueVariant: AttributeValueVariant[];
 }

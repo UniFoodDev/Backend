@@ -14,15 +14,12 @@ export class VariantService {
     return await this.variantRepo.find({
       where: {
         id: In(ids),
-        product: {
-          isActive: true,
-        },
+        product: {},
       },
       relations: {
         product: {
           images: true,
         },
-        attributeValues: true,
       },
     });
   }

@@ -1,6 +1,4 @@
-import { RolesGuard } from '../../guards/roles.guard';
-import { AccessTokenGuard } from '../auth/guards/access-token.guard';
-import { Role } from '../../enums/role.enum';
+import { ApiTags } from '@nestjs/swagger';
 import {
   Body,
   Controller,
@@ -9,16 +7,24 @@ import {
   Param,
   Patch,
   Post,
+  UseGuards,
 } from '@nestjs/common';
-import { AttributeValueService } from './attribute-value.service';
-import { CreateAttributeValueDto } from './dto/create-attribute-value.dto';
-import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
+import { Roles } from '../../decorator/role.decorator';
+import { Role } from '../../enums';
+import { AccessTokenGuard } from '../auth/guards/access-token.guard';
+import { RolesGuard } from '../../guards/roles.guard';
+import { AttributeValueService } from '../attribute-value/attribute-value.service';
+import { CreateAttributeValueDto } from '../attribute-value/dto/create-attribute-value.dto';
+import { UpdateAttributeValueDto } from '../attribute-value/dto/update-attribute-value.dto';
 
-@Controller('attribute-value')
-export class AttributeValueController {
+@ApiTags('attribute-value')
+@Controller('admin/attribute-value')
+@Roles(Role.Admin, Role.Manager, Role.Employee)
+@UseGuards(AccessTokenGuard, RolesGuard)
+export class AttributeValueAdminController {
   constructor(private readonly attributeValueService: AttributeValueService) {}
 
-  @Post()
+  @Post('create')
   create(@Body() createAttributeValueDto: CreateAttributeValueDto) {
     return this.attributeValueService.create(createAttributeValueDto);
   }
