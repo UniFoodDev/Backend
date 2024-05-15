@@ -1,11 +1,6 @@
 import { Order } from '../order/entities/order.entity';
 import { OrderItem } from '../order/entities/orderItem.entity';
-import {
-  BadRequestException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   IPaginationOptions,
@@ -14,6 +9,8 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { In, Like, Repository } from 'typeorm';
 import { Image } from '../image/entities/image.entity';
+import { AttributeProduct } from '../attribute/entities/attribute_product.entity';
+import { TagProduct } from '../tag/entities/tag_product.entity';
 import { Variant } from '../variant/entities/variant.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -26,8 +23,10 @@ export class ProductService {
     private productRepo: Repository<Product>,
     @InjectRepository(Image)
     private imageRepo: Repository<Image>,
-    @InjectRepository(Variant)
-    private variantRepo: Repository<Variant>,
+    @InjectRepository(TagProduct)
+    private tagProductRepo: Repository<TagProduct>,
+    @InjectRepository(AttributeProduct)
+    private attributeProductRepo: Repository<AttributeProduct>,
   ) {}
 
   async topSelling() {
@@ -109,14 +108,16 @@ export class ProductService {
     });
   }
 
-  findAll(): Promise<Product[]> {
-    return this.productRepo.find({
-      relations: {
-        category: true,
-        images: true,
-        variants: true,
-      },
-    });
+  async findAll(): Promise<Product[]> {
+    return this.productRepo
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'images')
+      .leftJoinAndSelect('product.tag_product', 'tag_product')
+      .leftJoinAndSelect('tag_product.tag', 'tag')
+      .leftJoinAndSelect('product.attributeProducts', 'attributeProducts')
+      .leftJoinAndSelect('attributeProducts.attribute', 'attribute')
+      .getMany();
   }
 
   async findByIds(ids: number[]): Promise<Product[]> {
@@ -183,36 +184,33 @@ export class ProductService {
     const name = await this.productRepo.findOneBy({
       name: createProductDto.name,
     });
-    if (name) throw new BadRequestException('Name already exist');
-
-    const slug = await this.productRepo.findOneBy({});
-    if (slug) throw new BadRequestException('Slug already exist');
-
-    const { images, variants } = createProductDto;
-
-    let duplicateVariant = false;
-    for (let i = 0; i < variants.length; i++) {
-      const curr = variants[i].attributeValues;
-      for (let j = i + 1; j < variants.length; j++) {
-        const next = variants[j].attributeValues;
-        if (JSON.stringify(curr) === JSON.stringify(next)) {
-          duplicateVariant = true;
-          break;
-        }
-      }
+    if (name) {
+      return {
+        status: 401,
+        message: 'Name already exist',
+      };
     }
-    if (duplicateVariant)
-      throw new BadRequestException('Duplicate variant attributes');
-
-    await this.imageRepo.save(images);
-    await this.variantRepo.save(variants);
-    return this.productRepo.save({ ...createProductDto });
+    const { images, tag_product, attributeProducts } = createProductDto;
+    await Promise.all([
+      this.imageRepo.save(images),
+      this.tagProductRepo.save(tag_product),
+      this.attributeProductRepo.save(attributeProducts),
+    ]);
+    const product = await this.productRepo.save(createProductDto);
+    return {
+      status: 201,
+      message: 'Register success',
+      data: { product },
+    };
   }
 
   async update(id: number, updateProductDto: UpdateProductDto) {
     const exist = await this.productRepo.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Product not found.');
+      return {
+        status: 404,
+        message: 'Product not found.',
+      };
     }
     const name = await this.productRepo
       .createQueryBuilder('product')
@@ -221,36 +219,24 @@ export class ProductService {
         nameExist: exist.name,
       })
       .getOne();
-
-    if (name) throw new BadRequestException('Name already exist');
-
-    const slug = await this.productRepo
-      .createQueryBuilder('product')
-      .where('product.slug = :slugUpdate and product.slug != :slugExist', {
-        // slugUpdate: updateProductDto.slug,
-      })
-      .getOne();
-    if (slug) throw new BadRequestException('Slug already exist');
-
-    const { images, variants } = updateProductDto;
-
-    let duplicateVariant = false;
-    for (let i = 0; i < variants.length; i++) {
-      const curr = variants[i].attributeValues;
-      for (let j = i + 1; j < variants.length; j++) {
-        const next = variants[j].attributeValues;
-        if (JSON.stringify(curr) === JSON.stringify(next)) {
-          duplicateVariant = true;
-          break;
-        }
-      }
+    if (name) {
+      return {
+        status: 400,
+        message: 'Name already exist',
+      };
     }
-    if (duplicateVariant)
-      throw new BadRequestException('Duplicate variant attributes');
 
-    await this.imageRepo.save(images);
-    await this.variantRepo.save(variants);
-    return this.productRepo.save({ id, ...updateProductDto });
+    const { images, tag_product, attributeProducts } = updateProductDto;
+    await Promise.all([
+      this.imageRepo.save(images),
+      this.tagProductRepo.save(tag_product),
+      this.attributeProductRepo.save(attributeProducts),
+    ]);
+    await this.productRepo.save({ id, ...updateProductDto });
+    return {
+      status: 200,
+      message: 'Update success',
+    };
   }
 
   async remove(id: number) {
@@ -258,9 +244,8 @@ export class ProductService {
     if (!exist) {
       throw new NotFoundException('Product not found.');
     }
-
     return this.productRepo.delete({ id }).then(() => ({
-      statusCode: HttpStatus.OK,
+      status: 200,
       message: 'Delete success',
     }));
   }

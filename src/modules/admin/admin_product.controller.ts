@@ -5,6 +5,7 @@ import {
   Delete,
   Get,
   Param,
+  Put,
   ParseIntPipe,
   Patch,
   Post,
@@ -39,7 +40,7 @@ export class ProductAdminController {
     return this.productService.count();
   }
 
-  @Get()
+  @Get('total-product-sold')
   async findAllForAdmin(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit = 10,
@@ -56,6 +57,11 @@ export class ProductAdminController {
     );
   }
 
+  @Get()
+  findAll() {
+    return this.productService.findAll();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findById(id);
@@ -66,7 +72,7 @@ export class ProductAdminController {
     return this.productService.create(createProductDto);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,

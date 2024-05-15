@@ -7,12 +7,22 @@ import { Variant } from '../variant/entities/variant.entity';
 import { Product } from './entities/product.entity';
 import { ProductController } from './product.controller';
 import { ProductService } from './product.service';
+import { AttributeProduct } from '../attribute/entities/attribute_product.entity';
+import { TagProduct } from '../tag/entities/tag_product.entity';
+import { TagModule } from '../tag/tag.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Product, Image, Variant]),
-    AttributeModule,
+    TypeOrmModule.forFeature([
+      Product,
+      Image,
+      Variant,
+      AttributeProduct,
+      TagProduct,
+    ]),
     CategoryModule,
+    TagModule,
+    AttributeModule,
   ],
   controllers: [ProductController],
   providers: [ProductService],

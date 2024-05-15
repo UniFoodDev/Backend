@@ -10,12 +10,17 @@ import {
 } from 'class-validator';
 import { nameRegex } from '../../../libs/regex';
 
-class CategoryDto {
+class Tag {
   @IsInt()
   id: number;
 }
 
-class AttributeDto {
+class Attribute {
+  @IsInt()
+  id: number;
+}
+
+class CategoryDto {
   @IsInt()
   id: number;
 }
@@ -33,67 +38,64 @@ class ImageDto {
   url: string;
 }
 
-class VariantDto {
+class TagProductDto {
   @IsOptional()
   @IsInt()
   id: number;
 
-  @IsInt()
-  price: number;
-
-  @IsInt()
-  quantity: number;
-
   @ValidateNested()
-  @Type(() => AttributeDto)
-  attributeValues: AttributeDto[];
+  @Type(() => Tag)
+  tag: Tag;
 }
 
-class AttributeValueDto {
+class AttributeProductsDto {
+  @IsOptional()
   @IsInt()
   id: number;
+
+  @ValidateNested()
+  @Type(() => Attribute)
+  attribute: Attribute;
 }
 
 export class CreateProductDto {
   @Length(2, 200)
   @Matches(nameRegex, {
-    message: 'name must contains at least 2 letter, no special letters',
+    message: 'Tên phải chứa ít nhất 2 chữ cái và không có ký tự đặc biệt',
   })
   name: string;
 
-  // @Matches(slugRegex, {
-  //   message: 'Slug is not valid',
-  // })
-  // slug: string;
+  @IsString()
+  price: string;
 
   @IsString()
   description: string;
+
+  @IsInt()
+  rating: number;
+
+  @IsInt()
+  discount: number;
+
+  @IsInt()
+  sales: number;
+
+  @IsInt()
+  amount: number;
 
   @ValidateNested()
   @Type(() => ImageDto)
   images: ImageDto[];
 
   @ValidateNested()
-  @Type(() => VariantDto)
-  variants: VariantDto[];
-
-  @IsOptional()
-  @IsBoolean()
-  isNew: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isActive: boolean;
-
-  @IsOptional()
-  @IsBoolean()
-  isPopular: boolean;
-
-  @ValidateNested()
   @Type(() => CategoryDto)
   category: CategoryDto;
 
   @ValidateNested()
-  @Type(() => AttributeValueDto)
-  attributeValues: AttributeValueDto[];
+  @Type(() => TagProductDto)
+  tag_product: TagProductDto[];
+
+  @ValidateNested()
+  @Type(() => AttributeProductsDto)
+  attributeProducts: AttributeProductsDto[];
 }

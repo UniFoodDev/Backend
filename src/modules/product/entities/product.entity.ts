@@ -30,7 +30,9 @@ export class Product extends AbstractEntity {
   amount: number;
 
   @ManyToOne(() => Category, (category) => category.products, {
-    nullable: true,
+    cascade: true,
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
   })
   category: Category;
 

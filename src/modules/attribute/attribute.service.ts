@@ -68,7 +68,10 @@ export class AttributeService {
   async update(id: number, updateAttributeDto: UpdateAttributeDto) {
     const exist = await this.attributesRepository.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Attribute not found.');
+      return {
+        status: 404,
+        message: 'Attribute not found.',
+      };
     }
     const name = await this.attributesRepository
       .createQueryBuilder('attribute')
@@ -77,12 +80,17 @@ export class AttributeService {
         nameExist: exist.name,
       })
       .getOne();
-    if (name) throw new BadRequestException('Name already exist');
+    if (name) {
+      return {
+        status: 400,
+        message: 'Name already exist',
+      };
+    }
 
     return this.attributesRepository
       .update(id, updateAttributeDto)
-      .then((res) => ({
-        statusCode: HttpStatus.OK,
+      .then(() => ({
+        status: 200,
         message: 'Update success',
       }))
       .catch((err) => console.log(err));

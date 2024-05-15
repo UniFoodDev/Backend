@@ -6,6 +6,7 @@ import {
   Param,
   ParseIntPipe,
   Patch,
+  Put,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -25,7 +26,7 @@ import { ApiTags } from '@nestjs/swagger';
 export class AttributeAdminController {
   constructor(private readonly attributeService: AttributeService) {}
 
-  @Post('create')
+  @Post()
   create(@Body() createAttributeDto: CreateAttributeDto) {
     return this.attributeService.create(createAttributeDto);
   }
@@ -40,7 +41,7 @@ export class AttributeAdminController {
     return this.attributeService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateAttributeDto: UpdateAttributeDto,

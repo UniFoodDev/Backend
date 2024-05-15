@@ -5,7 +5,7 @@ import {
   Delete,
   Get,
   Param,
-  Patch,
+  Put,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -24,7 +24,7 @@ import { UpdateAttributeValueDto } from '../attribute-value/dto/update-attribute
 export class AttributeValueAdminController {
   constructor(private readonly attributeValueService: AttributeValueService) {}
 
-  @Post('create')
+  @Post()
   create(@Body() createAttributeValueDto: CreateAttributeValueDto) {
     return this.attributeValueService.create(createAttributeValueDto);
   }
@@ -39,7 +39,7 @@ export class AttributeValueAdminController {
     return this.attributeValueService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateAttributeValueDto: UpdateAttributeValueDto,

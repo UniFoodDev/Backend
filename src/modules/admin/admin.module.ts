@@ -7,14 +7,27 @@ import { AttributeModule } from '../attribute/attribute.module';
 import { AttributeAdminController } from './admin_attribute.controller';
 import { AttributeValueAdminController } from './admin_attributeValue.controller';
 import { AttributeValueModule } from '../attribute-value/attribute-value.module';
+import { CategoryModule } from '../category/category.module';
+import { CategoryAdminController } from './admin_category.controller';
+import { TagModule } from '../tag/tag.module';
+import { TagAdminController } from './admin_tag.controller';
 
 @Module({
-  imports: [ProductModule, UserModule, AttributeModule, AttributeValueModule],
+  imports: [
+    ProductModule,
+    UserModule,
+    AttributeModule,
+    AttributeValueModule,
+    CategoryModule,
+    TagModule,
+  ],
   controllers: [
     ProductAdminController,
     UserAdminController,
     AttributeAdminController,
     AttributeValueAdminController,
+    CategoryAdminController,
+    TagAdminController,
   ],
   providers: [],
 })
