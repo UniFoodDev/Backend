@@ -25,14 +25,21 @@ import { UpdateAccountDto } from '../user/dto/update-account.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Admin User')
-@Controller('admin/user')
-@Roles(Role.Admin)
-@UseGuards(AccessTokenGuard, RolesGuard)
+@Controller('admin')
 export class UserAdminController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Post('create-employee')
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
+    return this.userService.createEmployee(createEmployeeDto);
+  }
+
+  @Roles(Role.Admin)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Post('create-manager')
+  createManager(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.userService.createEmployee(createEmployeeDto);
   }
 
@@ -55,7 +62,6 @@ export class UserAdminController {
   }
 
   @UseGuards(AccessTokenGuard)
-  // @UseInterceptors(ClassSerializerInterceptor)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findOne(id);

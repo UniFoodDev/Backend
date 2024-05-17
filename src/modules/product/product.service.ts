@@ -253,4 +253,15 @@ export class ProductService {
   async count() {
     return await this.productRepo.count();
   }
+
+  async findProductByCategory(categoryId: number) {
+    return await this.productRepo.find({
+      where: {
+        category: { id: categoryId },
+      },
+      relations: {
+        images: true,
+      },
+    });
+  }
 }

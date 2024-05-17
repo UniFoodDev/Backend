@@ -4,12 +4,15 @@ import { Repository } from 'typeorm';
 import { Tag } from './entities/tag.entity';
 import { CreateTagDto } from './dto';
 import { UpdateTagDto } from './dto';
+import { TagProduct } from './entities/tag_product.entity';
 
 @Injectable()
 export class TagService {
   constructor(
     @InjectRepository(Tag)
     private tagsRepository: Repository<Tag>,
+    @InjectRepository(TagProduct)
+    private tagProductRepository: Repository<TagProduct>,
   ) {}
 
   async create(createTagDto: CreateTagDto) {
@@ -80,6 +83,31 @@ export class TagService {
       status: 200,
       message: 'Get success',
       data: tags,
+    };
+  }
+
+  async findAllProductTag(id: number) {
+    const tag = await this.tagsRepository.findOneBy({ id });
+    if (!tag) {
+      return {
+        status: 404,
+        message: 'Tag not found',
+      };
+    }
+    const tagProduct = await this.tagProductRepository.find({
+      where: { tag: { id } },
+      relations: ['product', 'product.images'],
+    });
+
+    const productsWithImages = tagProduct.map((item) => ({
+      ...item.product,
+      images: item.product.images,
+    }));
+    console.log(productsWithImages);
+    return {
+      status: 200,
+      message: 'Get success',
+      data: productsWithImages,
     };
   }
 }

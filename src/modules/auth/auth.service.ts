@@ -44,6 +44,7 @@ export class AuthService {
       sub: user.id,
       roles: user.roles,
     };
+    console.log('123');
     return {
       status: 200,
       ...result,

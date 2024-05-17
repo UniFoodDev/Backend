@@ -26,11 +26,17 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
+import { TagService } from '../tag/tag.service';
+import { ProductService } from '../product/product.service';
 
 @ApiTags('user')
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly tagService: TagService,
+    private readonly productService: ProductService,
+  ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -43,14 +49,6 @@ export class UserController {
   updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
     return this.userService.updatePassword(updatePasswordDto);
   }
-
-  // @Roles(Role.Admin)
-  // @UseGuards(AccessTokenGuard, RolesGuard)
-  // @UseInterceptors(ClassSerializerInterceptor)
-  // @Get()
-  // findAll() {
-  //   return this.userService.findAll();
-  // }
 
   @UseGuards(AccessTokenGuard)
   @UseInterceptors(ClassSerializerInterceptor)
@@ -66,5 +64,17 @@ export class UserController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.userService.update(id, updateUserDto);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('product-tag/:id')
+  productTag(@Param('id', ParseIntPipe) id: number) {
+    return this.tagService.findAllProductTag(id);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('product-category/:id')
+  productCategory(@Param('id', ParseIntPipe) id: number) {
+    return this.productService.findProductByCategory(id);
   }
 }

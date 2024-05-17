@@ -52,19 +52,6 @@ export class CategoryService {
       },
     });
   }
-  //
-  // async findBySlugForUser(slug: string) {
-  //   const exist = await this.categoriesRepository.findOne({
-  //     where: {
-  //       // slug,
-  //       // isActive: true,
-  //     },
-  //   });
-  //   if (!exist) {
-  //     throw new NotFoundException('Category not found.');
-  //   }
-  //   return exist;
-  // }
 
   async findOne(id: number): Promise<Category> {
     const exist = await this.categoriesRepository.findOne({

@@ -47,14 +47,19 @@ export class UserService {
     const exist = await this.usersRepository.findOneBy({
       username: createEmployeeDto.username,
     });
-    if (exist) throw new BadRequestException('username already exist');
+    if (exist) {
+      return {
+        status: 401,
+        message: 'Username already exist',
+      };
+    }
     const hashedPassword = await bcrypt.hash(
       createEmployeeDto.password,
       saltOrRounds,
     );
     createEmployeeDto.password = hashedPassword;
     return this.usersRepository.save(createEmployeeDto).then(() => ({
-      statusCode: HttpStatus.CREATED,
+      status: 201,
       message: 'Register success',
     }));
   }
@@ -105,7 +110,6 @@ export class UserService {
     if (!exist) {
       throw new NotFoundException('User not found.');
     }
-
     return this.usersRepository.update(id, updateUserDto).then(() => ({
       statusCode: HttpStatus.OK,
       message: 'Update success',
