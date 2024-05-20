@@ -18,9 +18,6 @@ export class Variant {
   @Column({ nullable: false })
   price: number;
 
-  @Column({ nullable: false })
-  quantity: number;
-
   @ManyToOne(() => Product, (product) => product.variants, {
     cascade: true,
     onDelete: 'CASCADE',

@@ -1,13 +1,5 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { OrderStatus } from '../../../enums/orderStatus.enum';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { OrderStatus } from '../../../enums';
 import { User } from '../../user/entities/user.entity';
 import { OrderItem } from './orderItem.entity';
 import { PaymentType } from 'src/enums/payment-type.enum';

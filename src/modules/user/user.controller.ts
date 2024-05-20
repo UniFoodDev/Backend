@@ -77,4 +77,10 @@ export class UserController {
   productCategory(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findProductByCategory(id);
   }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('getAll/product')
+  product() {
+    return this.productService.findAllProduct();
+  }
 }

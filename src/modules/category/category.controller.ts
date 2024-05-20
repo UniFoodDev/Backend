@@ -27,9 +27,4 @@ export class CategoryController {
   findAllForUser() {
     return this.categoryService.findAllForUser();
   }
-
-  // @Get(':slug')
-  // findBySlugForUser(@Param('slug') slug: string) {
-  //   return this.categoryService.findBySlugForUser(slug);
-  // }
 }

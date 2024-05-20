@@ -96,7 +96,12 @@ export class TagService {
     }
     const tagProduct = await this.tagProductRepository.find({
       where: { tag: { id } },
-      relations: ['product', 'product.images'],
+      relations: [
+        'product',
+        'product.images',
+        'product.attributeProducts.attribute',
+        'product.attributeProducts.attribute.attributeValues',
+      ],
     });
 
     const productsWithImages = tagProduct.map((item) => ({

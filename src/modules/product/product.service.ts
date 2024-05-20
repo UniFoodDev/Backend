@@ -259,9 +259,27 @@ export class ProductService {
       where: {
         category: { id: categoryId },
       },
-      relations: {
-        images: true,
-      },
+      relations: [
+        'images',
+        'attributeProducts.attribute',
+        'attributeProducts.attribute.attributeValues',
+      ],
     });
+  }
+
+  async findAllProduct() {
+    const products = await this.productRepo.find({
+      take: 100,
+      relations: [
+        'images',
+        'attributeProducts.attribute',
+        'attributeProducts.attribute.attributeValues',
+      ],
+    });
+    return {
+      status: 200,
+      message: 'Get success',
+      data: products,
+    };
   }
 }
