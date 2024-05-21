@@ -29,7 +29,7 @@ export class AttributeValueAdminController {
     return this.attributeValueService.create(createAttributeValueDto);
   }
 
-  @Get()
+  @Get('all-attribute-value')
   findAll() {
     return this.attributeValueService.findAll();
   }

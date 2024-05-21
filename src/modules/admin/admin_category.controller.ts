@@ -28,7 +28,7 @@ export class CategoryAdminController {
     return this.categoryService.create(createCategoryDto);
   }
 
-  @Get()
+  @Get('all-category')
   findAll() {
     return this.categoryService.findAll();
   }

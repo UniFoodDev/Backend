@@ -57,7 +57,7 @@ export class ProductAdminController {
     );
   }
 
-  @Get()
+  @Get('all-product')
   findAll() {
     return this.productService.findAll();
   }

@@ -31,7 +31,7 @@ export class TagAdminController {
     return this.tagService.create(createTagDto);
   }
 
-  @Get()
+  @Get('all-tag')
   findAll() {
     return this.tagService.findAll();
   }
