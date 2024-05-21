@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsInt,
   IsOptional,
   IsString,
@@ -81,6 +82,9 @@ export class CreateProductDto {
 
   @IsInt()
   amount: number;
+
+  @IsBoolean()
+  isActive: boolean;
 
   @ValidateNested()
   @Type(() => ImageDto)

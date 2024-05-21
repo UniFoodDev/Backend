@@ -29,6 +29,12 @@ export class Product extends AbstractEntity {
   @Column({ nullable: false })
   amount: number;
 
+  @Column({
+    nullable: true,
+    default: true,
+  })
+  isActive: boolean;
+
   @ManyToOne(() => Category, (category) => category.products, {
     cascade: true,
     onDelete: 'CASCADE',
