@@ -1,25 +1,42 @@
 import { Type } from 'class-transformer';
-import { IsEnum, IsInt, IsOptional, IsString, ValidateNested } from 'class-validator';
-import { PaymentType } from '../../../enums/payment-type.enum';
+import {
+  IsEnum,
+  IsInt,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { OrderStatus, PaymentType } from '../../../enums';
 
-class UserDto {
+export class ProductDTO {
   @IsInt()
   id: number;
 }
 
-class OrderItemDto {
-  @IsOptional()
+export class AttributeValueDTO {
   @IsInt()
-  orderId: number;
+  id: number;
+}
 
-  @IsInt()
-  variantId: number;
+export class AttributeValueVariantDTO {
+  @ValidateNested({ each: true })
+  @Type(() => AttributeValueDTO)
+  attributeValue: AttributeValueDTO[];
+}
 
-  @IsInt()
-  orderedPrice: number;
+export class ProductArrayDTO {
+  @ValidateNested()
+  @Type(() => ProductDTO)
+  product: ProductDTO;
 
+  @ValidateNested({ each: true })
+  @Type(() => AttributeValueVariantDTO)
+  attributeValueVariant: AttributeValueVariantDTO[];
+}
+
+class UserDto {
   @IsInt()
-  orderedQuantity: number;
+  id: number;
 }
 
 export class CreateOrderDto {
@@ -36,20 +53,19 @@ export class CreateOrderDto {
   note: string;
 
   @IsOptional()
-  @IsInt()
-  shippingCost: number;
+  @IsString()
+  shippingCost: string;
 
-  @IsInt()
-  totalPrice: number;
+  @IsString()
+  totalPrice: string;
 
-  @IsEnum(PaymentType)
-  paymentMethod: PaymentType;
+  @IsEnum(OrderStatus, { each: true })
+  orderStatus: OrderStatus[];
+
+  @IsEnum(PaymentType, { each: true })
+  paymentMethod: PaymentType[];
 
   @ValidateNested()
   @Type(() => UserDto)
   user: UserDto;
-
-  @ValidateNested()
-  @Type(() => OrderItemDto)
-  orderItems: OrderItemDto[];
 }

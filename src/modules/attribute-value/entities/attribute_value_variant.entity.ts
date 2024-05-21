@@ -8,12 +8,6 @@ export class AttributeValueVariant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  variantId: number;
-
-  @Column()
-  attributeValueId: number;
-
   @ManyToOne(() => Variant, (variant) => variant.attributeValueVariant)
   variant: Variant;
 

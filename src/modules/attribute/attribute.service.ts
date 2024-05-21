@@ -47,7 +47,7 @@ export class AttributeService {
     }
   }
 
-  findAll(): Promise<Attribute[]> {
+  async findAll(): Promise<Attribute[]> {
     return this.attributesRepository.find({
       relations: { attributeValues: true },
       order: {

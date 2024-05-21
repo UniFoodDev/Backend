@@ -20,7 +20,7 @@ import { Roles } from '../../decorator/role.decorator';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { Role } from '../../enums/role.enum';
 import { RolesGuard } from '../../guards/roles.guard';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { CreateOrderDto, ProductArrayDTO } from './dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
@@ -57,8 +57,11 @@ export class OrderController {
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.orderService.create(createOrderDto);
+  create(
+    @Body() createOrderDto: CreateOrderDto,
+    productArrayDTO: ProductArrayDTO,
+  ) {
+    return this.orderService.create(createOrderDto, productArrayDTO);
   }
 
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
@@ -92,7 +95,7 @@ export class OrderController {
         const orderUpdate = new UpdateOrderStatusDto();
         orderUpdate.isPaid = true;
         orderUpdate.paidDate = new Date().toISOString();
-        await this.orderService.updateOrderStatus(orderId, orderUpdate);
+        // await this.orderService.updateOrderStatus(orderId, orderUpdate);
 
         result.returncode = 1;
         result.returnmessage = 'success';
@@ -176,21 +179,21 @@ export class OrderAdminController {
     );
   }
 
-  @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateOrderDto: UpdateOrderDto,
-  ) {
-    return this.orderService.update(id, updateOrderDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() updateOrderDto: UpdateOrderDto,
+  // ) {
+  //   return this.orderService.update(id, updateOrderDto);
+  // }
 
-  @Patch('update-status/:id')
-  updateOrderStatus(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
-  ) {
-    return this.orderService.updateOrderStatus(id, updateOrderStatusDto);
-  }
+  // @Patch('update-status/:id')
+  // updateOrderStatus(
+  //   @Param('id', ParseIntPipe) id: number,
+  //   @Body() updateOrderStatusDto: UpdateOrderStatusDto,
+  // ) {
+  //   return this.orderService.updateOrderStatus(id, updateOrderStatusDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {

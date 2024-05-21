@@ -15,8 +15,8 @@ export class Variant {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: false })
-  price: number;
+  @Column({ nullable: true })
+  price: string;
 
   @ManyToOne(() => Product, (product) => product.variants, {
     cascade: true,

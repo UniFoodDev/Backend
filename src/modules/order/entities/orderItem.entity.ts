@@ -7,17 +7,8 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column()
-  public orderId!: number;
-
-  @Column()
-  public variantId!: number;
-
   @Column({ nullable: false })
   orderedPrice: string;
-
-  @Column({ nullable: false })
-  orderedQuantity: string;
 
   @ManyToOne(() => Order, (order) => order.orderItems)
   public order!: Order;

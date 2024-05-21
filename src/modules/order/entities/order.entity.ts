@@ -7,20 +7,20 @@ import { AbstractEntity } from '../../../database';
 
 @Entity()
 export class Order extends AbstractEntity {
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   fullName: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   phone: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   address: string;
 
   @Column({ nullable: true })
   note: string;
 
-  @Column({ nullable: false, default: 0 })
-  shippingCost: number;
+  @Column({ nullable: true, default: 0 })
+  shippingCost: string;
 
   @Column({
     type: 'enum',
@@ -28,10 +28,10 @@ export class Order extends AbstractEntity {
     enum: OrderStatus,
     default: OrderStatus.Processing,
   })
-  orderStatus: OrderStatus;
+  orderStatus: OrderStatus[];
 
-  @Column({ nullable: false })
-  totalPrice: number;
+  @Column({ nullable: true })
+  totalPrice: string;
 
   @Column({
     nullable: false,
@@ -39,7 +39,7 @@ export class Order extends AbstractEntity {
     type: 'enum',
     enum: PaymentType,
   })
-  paymentMethod: PaymentType;
+  paymentMethod: PaymentType[];
 
   @Column({
     nullable: false,
@@ -51,7 +51,7 @@ export class Order extends AbstractEntity {
   user: User;
 
   @OneToMany(() => OrderItem, (orderItem) => orderItem.order)
-  public orderItems!: OrderItem[];
+  orderItems!: OrderItem[];
 
   @Column({ nullable: true, type: 'timestamp with time zone' })
   paidDate: Date;

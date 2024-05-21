@@ -31,7 +31,7 @@ export class AttributeAdminController {
     return this.attributeService.create(createAttributeDto);
   }
 
-  @Get()
+  @Get('all-attribute')
   findAll() {
     return this.attributeService.findAll();
   }

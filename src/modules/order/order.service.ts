@@ -14,12 +14,17 @@ import {
 } from 'nestjs-typeorm-paginate';
 import { firstValueFrom } from 'rxjs';
 import { Like, Raw, Repository } from 'typeorm';
-import { OrderStatus } from '../../enums/orderStatus.enum';
-import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderStatus } from '../../enums';
+import { CreateOrderDto, ProductArrayDTO } from './dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+// import { UpdateOrderDto } from './dto';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderItem.entity';
+import { AttributeValueVariant } from '../attribute-value/entities/attribute_value_variant.entity';
+import { User } from '../user/entities/user.entity';
+import { AttributeValue } from '../attribute-value/entities/attribute-value.entity';
+import { Product } from '../product/entities/product.entity';
+import { Variant } from '../variant/entities/variant.entity';
 
 @Injectable()
 export class OrderService {
@@ -29,26 +34,41 @@ export class OrderService {
     @InjectRepository(OrderItem)
     private orderItemsRepo: Repository<OrderItem>,
     private readonly httpService: HttpService,
+    @InjectRepository(AttributeValueVariant)
+    private attributeValueVariantRepo: Repository<AttributeValueVariant>,
+    @InjectRepository(User)
+    private usersRepo: Repository<User>,
+    @InjectRepository(AttributeValue)
+    private attributeValueRepo: Repository<AttributeValue>,
+    @InjectRepository(Product)
+    private productRepo: Repository<Product>,
+    @InjectRepository(Variant)
+    private variantRepo: Repository<Variant>,
   ) {}
 
-  async create(createOrderDto: CreateOrderDto) {
-    // const { orderItems } = createOrderDto;
-    // const order = await this.ordersRepo.save(createOrderDto);
-    //
-    // const newOrderItems = orderItems.map((o) => ({ ...o, orderId: order.id }));
-    // await this.orderItemsRepo.save(newOrderItems);
-    // return order;
-  }
-
-  async update(id: number, updateOrderDto: UpdateOrderDto) {
-    // const exist = await this.ordersRepo.findOneBy({ id });
-    // if (!exist) {
-    //   throw new NotFoundException('Order not found.');
-    // }
-    //
-    // const { orderItems } = updateOrderDto;
-    // await this.orderItemsRepo.save(orderItems);
-    // return this.ordersRepo.save({ id, ...updateOrderDto });
+  async create(
+    createOrderDto: CreateOrderDto,
+    productArrayDTO: ProductArrayDTO,
+  ) {
+    let newUser = createOrderDto.user;
+    if (newUser.id === 0) {
+      const exist = await this.usersRepo.findOneBy({
+        phone: createOrderDto.phone,
+      });
+      if (exist) {
+        newUser = exist;
+      } else {
+        newUser = await this.usersRepo.save({
+          phone: createOrderDto.phone,
+          fullName: createOrderDto.fullName,
+        });
+      }
+    }
+    const { user, ...orderData } = createOrderDto;
+    const order = await this.ordersRepo.save({
+      ...orderData,
+      user: newUser,
+    });
   }
 
   async updateOrderStatus(id: number, updateOrderStatus: UpdateOrderStatusDto) {
@@ -57,7 +77,7 @@ export class OrderService {
       throw new NotFoundException('Order not found.');
     }
 
-    return this.ordersRepo.update(id, { ...updateOrderStatus });
+    // return this.ordersRepo.update(id, { ...updateOrderStatus });
   }
 
   async findAll(
