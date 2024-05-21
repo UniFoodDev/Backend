@@ -4,7 +4,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { CreateVariantDto } from './dto/create-variant.dto';
 
 @ApiTags('variant')
-@Controller('variant')
+@Controller('api/variant')
 export class VariantController {
   constructor(private readonly variantService: VariantService) {}
 

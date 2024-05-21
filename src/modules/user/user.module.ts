@@ -8,12 +8,14 @@ import { Address } from './entities/address.entity';
 import { TagModule } from '../tag/tag.module';
 import { forwardRef } from '@nestjs/common';
 import { ProductModule } from '../product/product.module';
+import { CategoryModule } from '../category/category.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, CartItem, Address]),
     forwardRef(() => TagModule),
     forwardRef(() => ProductModule),
+    forwardRef(() => CategoryModule),
   ],
   controllers: [UserController],
   providers: [UserService],

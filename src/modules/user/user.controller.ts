@@ -27,15 +27,17 @@ import { User } from './entities/user.entity';
 import { UserService } from './user.service';
 import { ApiTags } from '@nestjs/swagger';
 import { TagService } from '../tag/tag.service';
+import { CategoryService } from '../category/category.service';
 import { ProductService } from '../product/product.service';
 
 @ApiTags('user')
-@Controller('user')
+@Controller('api/user')
 export class UserController {
   constructor(
     private readonly userService: UserService,
     private readonly tagService: TagService,
     private readonly productService: ProductService,
+    private readonly categoryService: CategoryService,
   ) {}
 
   @Post()
@@ -82,5 +84,17 @@ export class UserController {
   @Get('getAll/product')
   product() {
     return this.productService.findAllProduct();
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('get/All/category')
+  category() {
+    return this.categoryService.findAll();
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('user/get/all/tag')
+  tag() {
+    return this.tagService.findAll();
   }
 }

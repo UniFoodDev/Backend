@@ -22,7 +22,7 @@ import { UpdateCategoryDto } from '../category/dto/update-category.dto';
 @ApiTags('Admin Tag')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 @UseGuards(AccessTokenGuard, RolesGuard)
-@Controller('admin/tag')
+@Controller('api/admin/tag')
 export class TagAdminController {
   constructor(private readonly tagService: TagService) {}
 

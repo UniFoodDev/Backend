@@ -15,7 +15,7 @@ import {
 import { firstValueFrom } from 'rxjs';
 import { Like, Raw, Repository } from 'typeorm';
 import { OrderStatus } from '../../enums';
-import { CreateOrderDto, ProductArrayDTO } from './dto';
+import { CreateOrderDto } from './dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 // import { UpdateOrderDto } from './dto';
 import { Order } from './entities/order.entity';
@@ -25,6 +25,7 @@ import { User } from '../user/entities/user.entity';
 import { AttributeValue } from '../attribute-value/entities/attribute-value.entity';
 import { Product } from '../product/entities/product.entity';
 import { Variant } from '../variant/entities/variant.entity';
+import { VariantService } from '../variant/variant.service';
 
 @Injectable()
 export class OrderService {
@@ -44,12 +45,9 @@ export class OrderService {
     private productRepo: Repository<Product>,
     @InjectRepository(Variant)
     private variantRepo: Repository<Variant>,
+    private variantService: VariantService,
   ) {}
-
-  async create(
-    createOrderDto: CreateOrderDto,
-    productArrayDTO: ProductArrayDTO,
-  ) {
+  async create(createOrderDto: CreateOrderDto) {
     let newUser = createOrderDto.user;
     if (newUser.id === 0) {
       const exist = await this.usersRepo.findOneBy({
@@ -64,11 +62,33 @@ export class OrderService {
         });
       }
     }
-    const { user, ...orderData } = createOrderDto;
+    const { user, productArrayDTOWrapper, ...orderData } = createOrderDto;
     const order = await this.ordersRepo.save({
       ...orderData,
       user: newUser,
     });
+    const orderItems = await Promise.all(
+      createOrderDto.productArrayDTOWrapper.map(async (item) => {
+        const variant = await this.variantService.create(item); // Sử dụng await để đợi kết quả trả về từ variantService.create
+        const product = await this.productRepo.findOne({
+          where: { id: item.product.id },
+        });
+        const orderItem = await this.orderItemsRepo.save({
+          variant: variant,
+          product: product,
+          orderedPrice: variant.price,
+        });
+        return orderItem;
+      }),
+    );
+    const total = orderItems.reduce((acc, item) => acc + +item.orderedPrice, 0);
+    console.log(total);
+    order.totalPrice = total.toString();
+    await this.ordersRepo.save(order);
+    return {
+      status: 201,
+      message: 'Order success',
+    };
   }
 
   async updateOrderStatus(id: number, updateOrderStatus: UpdateOrderStatusDto) {

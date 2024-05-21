@@ -17,7 +17,7 @@ import { CategoryService } from '../category/category.service';
 import { CreateCategoryDto } from '../category/dto/create-category.dto';
 import { UpdateCategoryDto } from '../category/dto/update-category.dto';
 
-@Controller('admin/category')
+@Controller('api/admin/category')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 @UseGuards(AccessTokenGuard, RolesGuard)
 export class CategoryAdminController {

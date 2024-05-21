@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsEnum,
   IsInt,
   IsOptional,
@@ -8,30 +9,31 @@ import {
 } from 'class-validator';
 import { OrderStatus, PaymentType } from '../../../enums';
 
-export class ProductDTO {
+class ProductDto {
   @IsInt()
   id: number;
 }
 
-export class AttributeValueDTO {
+class AttributeValueDto {
   @IsInt()
   id: number;
 }
 
-export class AttributeValueVariantDTO {
-  @ValidateNested({ each: true })
-  @Type(() => AttributeValueDTO)
-  attributeValue: AttributeValueDTO[];
-}
-
-export class ProductArrayDTO {
+class AttributeValueVariantDto {
   @ValidateNested()
-  @Type(() => ProductDTO)
-  product: ProductDTO;
+  @Type(() => AttributeValueDto)
+  attributeValue: AttributeValueDto;
+}
 
+class ProductArrayDTO {
+  @ValidateNested()
+  @Type(() => ProductDto)
+  product: ProductDto;
+
+  @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => AttributeValueVariantDTO)
-  attributeValueVariant: AttributeValueVariantDTO[];
+  @Type(() => AttributeValueVariantDto)
+  attributeValueVariant: AttributeValueVariantDto[];
 }
 
 class UserDto {
@@ -43,7 +45,7 @@ export class CreateOrderDto {
   @IsString()
   fullName: string;
 
-  @IsInt()
+  @IsString()
   phone: string;
 
   @IsString()
@@ -68,4 +70,9 @@ export class CreateOrderDto {
   @ValidateNested()
   @Type(() => UserDto)
   user: UserDto;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ProductArrayDTO)
+  productArrayDTOWrapper: ProductArrayDTO[];
 }

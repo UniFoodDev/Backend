@@ -18,7 +18,7 @@ import { CreateAttributeValueDto } from '../attribute-value/dto/create-attribute
 import { UpdateAttributeValueDto } from '../attribute-value/dto/update-attribute-value.dto';
 
 @ApiTags('attribute-value')
-@Controller('admin/attribute-value')
+@Controller('api/admin/attribute-value')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 @UseGuards(AccessTokenGuard, RolesGuard)
 export class AttributeValueAdminController {

@@ -20,7 +20,7 @@ import { Roles } from '../../decorator/role.decorator';
 import { AccessTokenGuard } from '../auth/guards/access-token.guard';
 import { Role } from '../../enums/role.enum';
 import { RolesGuard } from '../../guards/roles.guard';
-import { CreateOrderDto, ProductArrayDTO } from './dto';
+import { CreateOrderDto } from './dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
@@ -28,7 +28,7 @@ import { OrderService } from './order.service';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('order')
-@Controller('order')
+@Controller('api/order')
 export class OrderController {
   constructor(private readonly orderService: OrderService) {}
 
@@ -56,12 +56,9 @@ export class OrderController {
 
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Post()
-  create(
-    @Body() createOrderDto: CreateOrderDto,
-    productArrayDTO: ProductArrayDTO,
-  ) {
-    return this.orderService.create(createOrderDto, productArrayDTO);
+  @Post('create-order')
+  create(@Body() createOrderDto: CreateOrderDto) {
+    return this.orderService.create(createOrderDto);
   }
 
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)

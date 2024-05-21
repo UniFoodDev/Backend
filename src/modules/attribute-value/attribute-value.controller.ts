@@ -14,7 +14,7 @@ import { AttributeValueService } from './attribute-value.service';
 import { CreateAttributeValueDto } from './dto/create-attribute-value.dto';
 import { UpdateAttributeValueDto } from './dto/update-attribute-value.dto';
 
-@Controller('attribute-value')
+@Controller('api/attribute-value')
 export class AttributeValueController {
   constructor(private readonly attributeValueService: AttributeValueService) {}
 

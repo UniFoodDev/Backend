@@ -26,7 +26,7 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('Admin Product')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 @UseGuards(AccessTokenGuard, RolesGuard)
-@Controller('admin/product')
+@Controller('api/admin/product')
 export class ProductAdminController {
   constructor(private readonly productService: ProductService) {}
 

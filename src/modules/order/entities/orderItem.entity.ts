@@ -7,7 +7,7 @@ export class OrderItem {
   @PrimaryGeneratedColumn()
   public id!: number;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   orderedPrice: string;
 
   @ManyToOne(() => Order, (order) => order.orderItems)

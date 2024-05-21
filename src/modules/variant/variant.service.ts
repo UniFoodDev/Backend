@@ -22,22 +22,34 @@ export class VariantService {
 
   async create(createVariantDto: CreateVariantDto) {
     const { attributeValueVariant, product } = createVariantDto;
-    const attributeValue = await Promise.all(
+
+    // Lấy thông tin của các giá trị thuộc tính từ cơ sở dữ liệu
+    const attributeValues = await Promise.all(
       attributeValueVariant.map((item) =>
         this.attributeValueRepo.findOne({
           where: { id: item.attributeValue.id },
         }),
       ),
     );
-    const price1 = attributeValue.reduce((acc, item) => acc + +item.price, 0);
-    const product1 = await this.productRepo.findOneBy({
+
+    // Tính tổng giá trị của các thuộc tính
+    const totalAttributeValuePrice = attributeValues.reduce(
+      (acc, item) => acc + +item.price,
+      0,
+    );
+
+    // Lấy thông tin của sản phẩm từ cơ sở dữ liệu
+    const productInfo = await this.productRepo.findOneBy({
       id: product.id,
     });
-    const price = price1 + +product1.price;
 
-    await Promise.all([
-      this.attributeValueVariantRepo.save(attributeValueVariant),
-    ]);
+    // Tính tổng giá của biến thể sản phẩm bằng cách cộng giá trị của các thuộc tính với giá của sản phẩm
+    const price = totalAttributeValuePrice + +productInfo.price;
+
+    // Lưu các biến thể của thuộc tính vào cơ sở dữ liệu
+    await this.attributeValueVariantRepo.save(attributeValueVariant);
+
+    // Tạo và lưu biến thể sản phẩm vào cơ sở dữ liệu
     return this.variantRepo.save(
       this.variantRepo.create({
         ...createVariantDto,

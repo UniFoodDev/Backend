@@ -20,7 +20,7 @@ import { UpdateAttributeDto } from '../attribute/dto/update-attribute.dto';
 import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('Admin Attribute')
-@Controller('admin/attribute')
+@Controller('api/admin/attribute')
 @Roles(Role.Admin, Role.Manager, Role.Employee)
 @UseGuards(AccessTokenGuard, RolesGuard)
 export class AttributeAdminController {
