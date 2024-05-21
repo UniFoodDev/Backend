@@ -10,6 +10,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -78,5 +79,11 @@ export class UserAdminController {
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Post('user/get/all/employee')
+  getAllEmployee(@Req() req) {
+    return this.userService.findAllUser(req);
   }
 }
