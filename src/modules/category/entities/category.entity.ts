@@ -13,6 +13,12 @@ export class Category {
   @Column({ nullable: true })
   description: string;
 
+  @Column({
+    nullable: true,
+    default: true,
+  })
+  isActive: boolean;
+
   @OneToMany(() => Image, (image) => image.category)
   images: Image[];
 

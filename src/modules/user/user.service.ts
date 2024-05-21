@@ -3,7 +3,9 @@ import {
   HttpStatus,
   Injectable,
   NotFoundException,
+  Req,
 } from '@nestjs/common';
+import { In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import {
@@ -180,5 +182,36 @@ export class UserService {
       return null;
     }
     return user;
+  }
+
+  async findAllUser(@Req() req) {
+    const roles = req.user.roles;
+    if (roles.includes(Role.Admin)) {
+      const data = await this.usersRepository
+        .createQueryBuilder('user')
+        .where(':role = ANY(user.roles)', { role: Role.Employee })
+        .orWhere(':role = ANY(user.roles)', { role: Role.Manager })
+        .getMany();
+      return {
+        status: 200,
+        message: 'Success',
+        data,
+      };
+    } else if (roles.includes(Role.Manager)) {
+      const data = await this.usersRepository
+        .createQueryBuilder('user')
+        .where(':role = ANY(user.roles)', { role: Role.Employee })
+        .getMany();
+      return {
+        status: 200,
+        message: 'Success',
+        data,
+      };
+    } else {
+      return {
+        status: 403,
+        message: 'Forbidden',
+      };
+    }
   }
 }

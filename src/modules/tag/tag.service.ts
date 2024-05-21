@@ -74,7 +74,10 @@ export class TagService {
   }
 
   async findAll() {
-    const tag = await this.tagsRepository.find();
+    const tag = await this.tagsRepository.find(
+      // moi lan chi co 4 tag, moi lan skip 4 tag tiep theo (page 1, page 2, page 3, ...)
+      { take: 4, skip: 0 },
+    );
     const tags = tag.map((item) => {
       const { createdAt, updatedAt, ...rest } = item;
       return rest;

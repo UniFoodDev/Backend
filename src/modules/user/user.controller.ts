@@ -2,14 +2,12 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
-  DefaultValuePipe,
-  Delete,
+  Req,
   Get,
   Param,
   ParseIntPipe,
   Patch,
   Post,
-  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -96,5 +94,11 @@ export class UserController {
   @Get('user/get/all/tag')
   tag() {
     return this.tagService.findAll();
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Post('/get/all/employee')
+  getAllEmployee(@Req() req) {
+    return this.userService.findAllUser(req);
   }
 }

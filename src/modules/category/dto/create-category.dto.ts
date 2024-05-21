@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsInt,
   IsOptional,
   IsString,
@@ -33,6 +34,9 @@ export class CreateCategoryDto {
   @IsString()
   @MaxLength(200)
   description: string;
+
+  @IsBoolean()
+  isActive: boolean;
 
   @ValidateNested()
   @Type(() => ImageDto)
