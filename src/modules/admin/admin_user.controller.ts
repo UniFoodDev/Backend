@@ -32,17 +32,17 @@ export class UserAdminController {
 
   @Roles(Role.Admin, Role.Manager)
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Post('create-employee')
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.userService.createEmployee(createEmployeeDto);
+  @Post('create-user')
+  create(@Body() createEmployeeDto: CreateEmployeeDto, @Req() req) {
+    return this.userService.createEmployee(createEmployeeDto, req);
   }
 
-  @Roles(Role.Admin)
-  @UseGuards(AccessTokenGuard, RolesGuard)
-  @Post('create-manager')
-  createManager(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.userService.createEmployee(createEmployeeDto);
-  }
+  // @Roles(Role.Admin)
+  // @UseGuards(AccessTokenGuard, RolesGuard)
+  // @Post('create-manager')
+  // createManager(@Body() createEmployeeDto: CreateEmployeeDto) {
+  //   return this.userService.createEmployee(createEmployeeDto);
+  // }
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Get()

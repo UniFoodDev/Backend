@@ -45,25 +45,58 @@ export class UserService {
     const userSave = await this.usersRepository.save(user);
     return userSave;
   }
-  async createEmployee(createEmployeeDto: CreateEmployeeDto) {
-    const exist = await this.usersRepository.findOneBy({
-      username: createEmployeeDto.username,
-    });
-    if (exist) {
+  async createEmployee(createEmployeeDto: CreateEmployeeDto, req) {
+    if (req.user.roles.includes(Role.Admin)) {
+      const exist = await this.usersRepository.findOneBy({
+        username: createEmployeeDto.username,
+      });
+      if (exist) {
+        return {
+          status: 401,
+          message: 'Username already exist',
+        };
+      }
+      const hashedPassword = await bcrypt.hash(
+        createEmployeeDto.password,
+        saltOrRounds,
+      );
+      createEmployeeDto.password = hashedPassword;
+      return this.usersRepository.save(createEmployeeDto).then(() => ({
+        status: 201,
+        message: 'Register success',
+      }));
+    } else if (req.user.roles.includes(Role.Manager)) {
+      const exist = await this.usersRepository.findOneBy({
+        username: createEmployeeDto.username,
+      });
+      if (exist) {
+        return {
+          status: 401,
+          message: 'Username already exist',
+        };
+      }
+      const hashedPassword = await bcrypt.hash(
+        createEmployeeDto.password,
+        saltOrRounds,
+      );
+      createEmployeeDto.password = hashedPassword;
+      if (createEmployeeDto.roles.includes(Role.Employee)) {
+        return this.usersRepository.save(createEmployeeDto).then(() => ({
+          status: 201,
+          message: 'Register success',
+        }));
+      } else {
+        return {
+          status: 401,
+          message: 'Role not valid',
+        };
+      }
+    } else {
       return {
-        status: 401,
-        message: 'Username already exist',
+        status: 403,
+        message: 'Forbidden',
       };
     }
-    const hashedPassword = await bcrypt.hash(
-      createEmployeeDto.password,
-      saltOrRounds,
-    );
-    createEmployeeDto.password = hashedPassword;
-    return this.usersRepository.save(createEmployeeDto).then(() => ({
-      status: 201,
-      message: 'Register success',
-    }));
   }
 
   async findAllForAdmin(
