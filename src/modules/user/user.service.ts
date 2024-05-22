@@ -46,55 +46,62 @@ export class UserService {
     return userSave;
   }
   async createEmployee(createEmployeeDto: CreateEmployeeDto, req) {
-    if (req.user.roles.includes(Role.Admin)) {
-      const exist = await this.usersRepository.findOneBy({
-        username: createEmployeeDto.username,
-      });
-      if (exist) {
-        return {
-          status: 401,
-          message: 'Username already exist',
-        };
-      }
-      const hashedPassword = await bcrypt.hash(
-        createEmployeeDto.password,
-        saltOrRounds,
-      );
-      createEmployeeDto.password = hashedPassword;
-      return this.usersRepository.save(createEmployeeDto).then(() => ({
-        status: 201,
-        message: 'Register success',
-      }));
-    } else if (req.user.roles.includes(Role.Manager)) {
-      const exist = await this.usersRepository.findOneBy({
-        username: createEmployeeDto.username,
-      });
-      if (exist) {
-        return {
-          status: 401,
-          message: 'Username already exist',
-        };
-      }
-      const hashedPassword = await bcrypt.hash(
-        createEmployeeDto.password,
-        saltOrRounds,
-      );
-      createEmployeeDto.password = hashedPassword;
-      if (createEmployeeDto.roles.includes(Role.Employee)) {
+    try {
+      if (req.user.roles.includes(Role.Admin)) {
+        const exist = await this.usersRepository.findOneBy({
+          username: createEmployeeDto.username,
+        });
+        if (exist) {
+          return {
+            status: 401,
+            message: 'Username already exist',
+          };
+        }
+        const hashedPassword = await bcrypt.hash(
+          createEmployeeDto.password,
+          saltOrRounds,
+        );
+        createEmployeeDto.password = hashedPassword;
         return this.usersRepository.save(createEmployeeDto).then(() => ({
           status: 201,
           message: 'Register success',
         }));
+      } else if (req.user.roles.includes(Role.Manager)) {
+        const exist = await this.usersRepository.findOneBy({
+          username: createEmployeeDto.username,
+        });
+        if (exist) {
+          return {
+            status: 401,
+            message: 'Username already exist',
+          };
+        }
+        const hashedPassword = await bcrypt.hash(
+          createEmployeeDto.password,
+          saltOrRounds,
+        );
+        createEmployeeDto.password = hashedPassword;
+        if (createEmployeeDto.roles.includes(Role.Employee)) {
+          return this.usersRepository.save(createEmployeeDto).then(() => ({
+            status: 201,
+            message: 'Register success',
+          }));
+        } else {
+          return {
+            status: 401,
+            message: 'Role not valid',
+          };
+        }
       } else {
         return {
-          status: 401,
-          message: 'Role not valid',
+          status: 403,
+          message: 'Forbidden',
         };
       }
-    } else {
+    } catch (error) {
       return {
-        status: 403,
-        message: 'Forbidden',
+        status: 500,
+        message: error.message,
       };
     }
   }
@@ -219,11 +226,16 @@ export class UserService {
 
   async findAllUser(@Req() req) {
     const roles = req.user.roles;
+
     if (roles.includes(Role.Admin)) {
       const data = await this.usersRepository
         .createQueryBuilder('user')
-        .where(':role = ANY(user.roles)', { role: Role.Employee })
-        .orWhere(':role = ANY(user.roles)', { role: Role.Manager })
+        .where(':employeeRole = ANY(user.roles)', {
+          employeeRole: Role.Employee,
+        })
+        .orWhere(':managerRole = ANY(user.roles)', {
+          managerRole: Role.Manager,
+        })
         .getMany();
       return {
         status: 200,
@@ -233,7 +245,9 @@ export class UserService {
     } else if (roles.includes(Role.Manager)) {
       const data = await this.usersRepository
         .createQueryBuilder('user')
-        .where(':role = ANY(user.roles)', { role: Role.Employee })
+        .where(':employeeRole = ANY(user.roles)', {
+          employeeRole: Role.Employee,
+        })
         .getMany();
       return {
         status: 200,
