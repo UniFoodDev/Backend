@@ -77,6 +77,15 @@ export class UserAdminController {
     return this.userService.updateAccount(id, updateAccountDto);
   }
 
+  @Post('update-user/:id')
+  updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateUserDto: UpdateAccountDto,
+    @Req() req,
+  ) {
+    return this.userService.updateUser(id, updateUserDto, req);
+  }
+
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);

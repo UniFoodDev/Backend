@@ -263,4 +263,52 @@ export class UserService {
       };
     }
   }
+
+  async updateUser(id: number, updateUserDto: UpdateAccountDto, @Req() req) {
+    try {
+      const exist = await this.usersRepository.findOneBy({ id });
+      if (!exist) {
+        return {
+          status: 404,
+          message: 'User not found',
+        };
+      }
+
+      const userRoles = req.user.roles;
+      const isAdmin = userRoles.includes(Role.Admin);
+      const isManager = userRoles.includes(Role.Manager);
+      const isEmployeeRole = updateUserDto.roles.includes(Role.Employee);
+
+      if (isAdmin) {
+        await this.usersRepository.update(id, updateUserDto);
+        return {
+          status: 200,
+          message: 'Success',
+        };
+      } else if (isManager) {
+        if (isEmployeeRole) {
+          await this.usersRepository.update(id, updateUserDto);
+          return {
+            status: 200,
+            message: 'Success',
+          };
+        } else {
+          return {
+            status: 401,
+            message: 'Role not valid',
+          };
+        }
+      } else {
+        return {
+          status: 403,
+          message: 'Forbidden',
+        };
+      }
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Internal server error',
+      };
+    }
+  }
 }
