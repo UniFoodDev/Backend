@@ -82,7 +82,7 @@ export class UserAdminController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Post('user/get/all/employee')
+  @Get('user/get/all/employee')
   getAllEmployee(@Req() req) {
     return this.userService.findAllUser(req);
   }
