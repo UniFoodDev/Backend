@@ -45,36 +45,37 @@ export class UserService {
     const userSave = await this.usersRepository.save(user);
     return userSave;
   }
-  async createEmployee(createEmployeeDto: CreateEmployeeDto, req) {
+  async createEmployee(createEmployeeDto: CreateEmployeeDto, req, res) {
     try {
       if (req.user.roles.includes(Role.Admin)) {
         const exist = await this.usersRepository.findOneBy({
           username: createEmployeeDto.username,
         });
         if (exist) {
-          return {
+          return res.status(401).json({
             status: 401,
-            message: 'Username already exist',
-          };
+            message: 'Username already exists',
+          });
         }
         const hashedPassword = await bcrypt.hash(
           createEmployeeDto.password,
           saltOrRounds,
         );
         createEmployeeDto.password = hashedPassword;
-        return this.usersRepository.save(createEmployeeDto).then(() => ({
+        await this.usersRepository.save(createEmployeeDto);
+        return res.status(201).json({
           status: 201,
           message: 'Register success',
-        }));
+        });
       } else if (req.user.roles.includes(Role.Manager)) {
         const exist = await this.usersRepository.findOneBy({
           username: createEmployeeDto.username,
         });
         if (exist) {
-          return {
+          return res.status(401).json({
             status: 401,
-            message: 'Username already exist',
-          };
+            message: 'Username already exists',
+          });
         }
         const hashedPassword = await bcrypt.hash(
           createEmployeeDto.password,
@@ -82,27 +83,28 @@ export class UserService {
         );
         createEmployeeDto.password = hashedPassword;
         if (createEmployeeDto.roles.includes(Role.Employee)) {
-          return this.usersRepository.save(createEmployeeDto).then(() => ({
+          await this.usersRepository.save(createEmployeeDto);
+          return res.status(201).json({
             status: 201,
             message: 'Register success',
-          }));
+          });
         } else {
-          return {
+          return res.status(401).json({
             status: 401,
             message: 'Role not valid',
-          };
+          });
         }
       } else {
-        return {
+        return res.status(403).json({
           status: 403,
           message: 'Forbidden',
-        };
+        });
       }
     } catch (error) {
-      return {
+      return res.status(500).json({
         status: 500,
-        message: error.message,
-      };
+        message: 'Internal server error',
+      });
     }
   }
 

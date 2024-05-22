@@ -11,6 +11,7 @@ import {
   Post,
   Query,
   Req,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -33,8 +34,8 @@ export class UserAdminController {
   @Roles(Role.Admin, Role.Manager)
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('create-user')
-  create(@Body() createEmployeeDto: CreateEmployeeDto, @Req() req) {
-    return this.userService.createEmployee(createEmployeeDto, req);
+  create(@Body() createEmployeeDto: CreateEmployeeDto, @Req() req, @Res() res) {
+    return this.userService.createEmployee(createEmployeeDto, req, res);
   }
 
   // @Roles(Role.Admin)
