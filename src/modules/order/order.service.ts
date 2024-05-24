@@ -94,10 +94,22 @@ export class OrderService {
   async updateOrderStatus(id: number, updateOrderStatus: UpdateOrderStatusDto) {
     const exist = await this.ordersRepo.findOneBy({ id });
     if (!exist) {
-      throw new NotFoundException('Order not found.');
+      return {
+        status: 404,
+        message: 'Order not found.',
+      };
     }
-
-    // return this.ordersRepo.update(id, { ...updateOrderStatus });
+    const order = await this.ordersRepo.save({
+      id,
+      orderStatus: updateOrderStatus.orderStatus,
+      isPaid: updateOrderStatus.isPaid,
+      paidDate: updateOrderStatus.paidDate,
+    });
+    return {
+      status: 200,
+      message: 'Update success',
+      data: order,
+    };
   }
 
   async findAll(

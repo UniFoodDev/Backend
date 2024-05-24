@@ -63,6 +63,16 @@ export class OrderController {
 
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
   @UseGuards(AccessTokenGuard, RolesGuard)
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateOrderStatusDto: UpdateOrderStatusDto,
+  ) {
+    return this.orderService.updateOrderStatus(id, updateOrderStatusDto);
+  }
+
+  @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('zalopay/create-order')
   createZaloPayOrder(@Body() order) {
     return this.orderService.createZaloPayOrder(order);

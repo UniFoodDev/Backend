@@ -1,10 +1,10 @@
 import { IsBoolean, IsEnum, IsISO8601, IsOptional } from 'class-validator';
-import { OrderStatus } from '../../../enums/orderStatus.enum';
+import { OrderStatus } from '../../../enums';
 
 export class UpdateOrderStatusDto {
   @IsOptional()
-  @IsEnum(OrderStatus)
-  orderStatus: OrderStatus;
+  @IsEnum(OrderStatus, { each: true })
+  orderStatus: OrderStatus[];
 
   @IsOptional()
   @IsBoolean()

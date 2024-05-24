@@ -11,6 +11,8 @@ import { CategoryModule } from '../category/category.module';
 import { CategoryAdminController } from './admin_category.controller';
 import { TagModule } from '../tag/tag.module';
 import { TagAdminController } from './admin_tag.controller';
+import { OrderModule } from '../order/order.module';
+import { OrderAdminController } from './admin_order.controller';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { TagAdminController } from './admin_tag.controller';
     AttributeValueModule,
     CategoryModule,
     TagModule,
+    OrderModule,
   ],
   controllers: [
     ProductAdminController,
@@ -28,6 +31,7 @@ import { TagAdminController } from './admin_tag.controller';
     AttributeValueAdminController,
     CategoryAdminController,
     TagAdminController,
+    OrderAdminController,
   ],
   providers: [],
 })

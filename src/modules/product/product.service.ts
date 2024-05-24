@@ -225,7 +225,6 @@ export class ProductService {
         message: 'Name already exist',
       };
     }
-
     const { images, tag_product, attributeProducts } = updateProductDto;
     await Promise.all([
       this.imageRepo.save(images),
