@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { In } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { CreateAddressDto } from './dto/create-address.dto';
 import * as bcrypt from 'bcrypt';
 import {
   IPaginationOptions,
@@ -21,6 +22,8 @@ import { UpdateAccountDto } from './dto/update-account.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { Address } from './entities/address.entity';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 const saltOrRounds = 10;
 
@@ -29,6 +32,8 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Address)
+    private addressRepository: Repository<Address>,
   ) {}
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(
@@ -310,5 +315,33 @@ export class UserService {
         message: 'Internal server error',
       };
     }
+  }
+
+  async getUserByIds(@Req() req) {
+    return this.usersRepository.find({
+      where: {
+        id: req.user.userId,
+      },
+    });
+  }
+
+  async createAdress(createAddressDto: CreateAddressDto, @Req() req) {
+    const user = await this.usersRepository.findOne(req.user.userId);
+    const address = await this.addressRepository.create({
+      ...createAddressDto,
+      user: user,
+    });
+    return this.addressRepository.save(address);
+  }
+
+  async updateAddress(id: number, updateAddressDto: UpdateAddressDto) {
+    const exist = await this.addressRepository.findOneBy({ id });
+    if (!exist) {
+      throw new NotFoundException('Address not found.');
+    }
+    return this.addressRepository.update(id, updateAddressDto).then(() => ({
+      status: 200,
+      message: 'Update success',
+    }));
   }
 }

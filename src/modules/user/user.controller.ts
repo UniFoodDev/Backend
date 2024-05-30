@@ -10,6 +10,7 @@ import {
   Post,
   UseGuards,
   UseInterceptors,
+  Put,
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Roles } from '../../decorator/role.decorator';
@@ -27,6 +28,8 @@ import { ApiTags } from '@nestjs/swagger';
 import { TagService } from '../tag/tag.service';
 import { CategoryService } from '../category/category.service';
 import { ProductService } from '../product/product.service';
+import { CreateAddressDto } from './dto/create-address.dto';
+import { UpdateAddressDto } from './dto/update-address.dto';
 
 @ApiTags('user')
 @Controller('api/user')
@@ -100,5 +103,26 @@ export class UserController {
   @Post('/get/all/employee')
   getAllEmployee(@Req() req) {
     return this.userService.findAllUser(req);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('/get/user/by/id')
+  getUser(@Req() req) {
+    return this.userService.getUserByIds(req);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Post('create/address')
+  createAddress(@Body() createAddressDto: CreateAddressDto, @Req() req) {
+    return this.userService.createAdress(createAddressDto, req);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Put('update/address/:id')
+  updateAddress(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateAddressDto: UpdateAddressDto,
+  ) {
+    return this.userService.updateAddress(id, updateAddressDto);
   }
 }
