@@ -61,12 +61,9 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
-  @Patch(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.userService.update(id, updateUserDto);
+  @Put('update-account')
+  update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(req, updateUserDto);
   }
 
   @Get('product-tag/:id')

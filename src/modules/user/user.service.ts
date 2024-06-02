@@ -154,7 +154,8 @@ export class UserService {
     return exist;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(@Req() req, updateUserDto: UpdateUserDto) {
+    const id = req.user.userId;
     const exist = await this.usersRepository.findOneBy({ id });
     if (!exist) {
       throw new NotFoundException('User not found.');
