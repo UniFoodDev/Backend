@@ -69,31 +69,26 @@ export class UserController {
     return this.userService.update(id, updateUserDto);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('product-tag/:id')
   productTag(@Param('id', ParseIntPipe) id: number) {
     return this.tagService.findAllProductTag(id);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('product-category/:id')
   productCategory(@Param('id', ParseIntPipe) id: number) {
     return this.productService.findProductByCategory(id);
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('getAll/product')
   product() {
     return this.productService.findAllProduct();
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('get/All/category')
   category() {
     return this.categoryService.findAll();
   }
 
-  @UseGuards(AccessTokenGuard)
   @Get('user/get/all/tag')
   tag() {
     return this.tagService.findAll();
