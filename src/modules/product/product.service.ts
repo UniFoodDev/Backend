@@ -136,20 +136,25 @@ export class ProductService {
     return exist;
   }
 
-  async findById(id: number): Promise<Product> {
+  async findById(id: number): Promise<any> {
     const exist = await this.productRepo.findOne({
       where: { id },
-      relations: {
-        category: true,
-        images: true,
-        variants: {},
-      },
+      relations: [
+        'category',
+        'images',
+        'tag_product.tag',
+        'attributeProducts.attribute',
+      ],
     });
     if (!exist) {
       throw new NotFoundException('Product not found.');
     }
 
-    return exist;
+    return {
+      status: 200,
+      message: 'Get success',
+      data: exist,
+    };
   }
 
   async findBySlugForUser(plug: string): Promise<Product> {
@@ -158,7 +163,7 @@ export class ProductService {
       relations: {
         category: true,
         images: true,
-        variants: {},
+        attributeProducts: true,
       },
     });
     if (!exist) {
