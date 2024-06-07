@@ -4,7 +4,7 @@ import { OrderStatus } from '../../../enums';
 export class UpdateOrderStatusDto {
   @IsOptional()
   @IsEnum(OrderStatus, { each: true })
-  orderStatus: OrderStatus[];
+  orderStatus: OrderStatus;
 
   @IsOptional()
   @IsBoolean()

@@ -19,8 +19,11 @@ export class Order extends AbstractEntity {
   @Column({ nullable: true })
   note: string;
 
-  @Column({ nullable: true, default: 0 })
+  @Column({ nullable: true, default: null })
   shippingCost: string;
+
+  @Column({ nullable: true })
+  totalPrice: string;
 
   @Column({
     type: 'enum',
@@ -28,18 +31,15 @@ export class Order extends AbstractEntity {
     enum: OrderStatus,
     default: OrderStatus.Processing,
   })
-  orderStatus: OrderStatus[];
-
-  @Column({ nullable: true })
-  totalPrice: string;
+  orderStatus: OrderStatus;
 
   @Column({
     nullable: false,
-    default: [PaymentType.COD],
+    default: PaymentType.COD,
     type: 'enum',
     enum: PaymentType,
   })
-  paymentMethod: PaymentType[];
+  paymentMethod: PaymentType;
 
   @Column({
     nullable: false,

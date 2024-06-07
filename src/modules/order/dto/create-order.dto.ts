@@ -54,18 +54,8 @@ export class CreateOrderDto {
   @IsString()
   note: string;
 
-  @IsOptional()
-  @IsString()
-  shippingCost: string;
-
-  @IsString()
-  totalPrice: string;
-
-  @IsEnum(OrderStatus, { each: true })
-  orderStatus: OrderStatus[];
-
   @IsEnum(PaymentType, { each: true })
-  paymentMethod: PaymentType[];
+  paymentMethod: PaymentType;
 
   @ValidateNested()
   @Type(() => UserDto)

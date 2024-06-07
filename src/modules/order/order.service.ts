@@ -48,6 +48,7 @@ export class OrderService {
     private variantService: VariantService,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
+    console.log('trung');
     let newUser = createOrderDto.user;
     if (newUser.id === 0) {
       const exist = await this.usersRepo.findOneBy({
@@ -84,6 +85,13 @@ export class OrderService {
     const total = orderItems.reduce((acc, item) => acc + +item.orderedPrice, 0);
     console.log(total);
     order.totalPrice = total.toString();
+    let ship = 0;
+    if (+order.totalPrice >= 100000) {
+      ship = 0;
+    } else {
+      ship = 20000;
+    }
+    order.shippingCost = ship.toString();
     await this.ordersRepo.save(order);
     return {
       status: 201,
