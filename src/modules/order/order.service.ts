@@ -48,7 +48,6 @@ export class OrderService {
     private variantService: VariantService,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
-    console.log('trung');
     let newUser = createOrderDto.user;
     if (newUser.id === 0) {
       const exist = await this.usersRepo.findOneBy({
@@ -74,16 +73,23 @@ export class OrderService {
         const product = await this.productRepo.findOne({
           where: { id: item.product.id },
         });
-        const orderItem = await this.orderItemsRepo.save({
-          variant: variant,
-          product: product,
-          orderedPrice: variant.price,
-        });
-        return orderItem;
+        if (product.amount > 0) {
+          product.amount -= 1;
+          await this.productRepo.save(product);
+          const orderItem = await this.orderItemsRepo.save({
+            variant: variant,
+            product: product,
+            orderedPrice: variant.price,
+          });
+          return orderItem;
+        } else {
+          throw new InternalServerErrorException(
+            'Product out of stock. Please try again later.',
+          );
+        }
       }),
     );
     const total = orderItems.reduce((acc, item) => acc + +item.orderedPrice, 0);
-    console.log(total);
     order.totalPrice = total.toString();
     let ship = 0;
     if (+order.totalPrice >= 100000) {
@@ -113,6 +119,16 @@ export class OrderService {
       isPaid: updateOrderStatus.isPaid,
       paidDate: updateOrderStatus.paidDate,
     });
+    if (order.orderStatus === OrderStatus.Cancel) {
+      order.orderItems.forEach(async (item) => {
+        const variant = await this.variantRepo.findOne({
+          where: { id: item.variant.id },
+        });
+        variant.product.amount += 1;
+        await this.productRepo.save(variant.product);
+        await this.variantRepo.save(variant);
+      });
+    }
     return {
       status: 200,
       message: 'Update success',
