@@ -16,9 +16,11 @@ import { MailModule } from './modules/mail/mail.module';
 import { TagModule } from './modules/tag/tag.module';
 import { AttributeValueModule } from './modules/attribute-value/attribute-value.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    CacheModule.register({ isGlobal: true, ttl: 600 }),
     ConfigModule.forRoot({
       envFilePath: ['.env'],
     }),

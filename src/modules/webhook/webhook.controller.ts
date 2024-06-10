@@ -2,16 +2,16 @@ import { Body, Controller, Post } from '@nestjs/common';
 import { WebhookService } from './webhook.service';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags('webhook')
-@Controller('webhook')
+@ApiTags('webhook/payment')
+@Controller('api/payment')
 export class WebhookController {
   private readonly webhookService: WebhookService;
   constructor() {
     this.webhookService = new WebhookService();
   }
 
-  @Post()
-  async webhook(@Body() data: any) {
-    return this.webhookService.webhook(data);
+  @Post('callback')
+  async webhook(@Body() orderId: number, data: any) {
+    return this.webhookService.webhook(orderId, data);
   }
 }

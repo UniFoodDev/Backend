@@ -12,6 +12,7 @@ import {
   Req,
   Res,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { createHmac } from 'crypto';
 import { Request, Response } from 'express';
@@ -26,6 +27,7 @@ import { UpdateOrderDto } from './dto/update-order.dto';
 import { Order } from './entities/order.entity';
 import { OrderService } from './order.service';
 import { ApiTags } from '@nestjs/swagger';
+import { CacheInterceptor } from '@nestjs/cache-manager';
 
 @ApiTags('order')
 @Controller('api/order')
@@ -54,6 +56,7 @@ export class OrderController {
     );
   }
 
+  @UseInterceptors(CacheInterceptor)
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
   @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('create-order')

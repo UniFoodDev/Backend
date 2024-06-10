@@ -2,6 +2,7 @@ import { HttpService } from '@nestjs/axios';
 import {
   HttpStatus,
   Injectable,
+  Inject,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -26,6 +27,8 @@ import { AttributeValue } from '../attribute-value/entities/attribute-value.enti
 import { Product } from '../product/entities/product.entity';
 import { Variant } from '../variant/entities/variant.entity';
 import { VariantService } from '../variant/variant.service';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class OrderService {
@@ -46,6 +49,8 @@ export class OrderService {
     @InjectRepository(Variant)
     private variantRepo: Repository<Variant>,
     private variantService: VariantService,
+    @Inject(CACHE_MANAGER)
+    private cacheService: Cache,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
     let newUser = createOrderDto.user;
@@ -99,9 +104,12 @@ export class OrderService {
     }
     order.shippingCost = ship.toString();
     await this.ordersRepo.save(order);
+    await this.cacheService.set(`order-${order.id}`, order);
+    console.log(await this.cacheService.get(`order-${order.id}`));
     return {
       status: 201,
       message: 'Order success',
+      data: order,
     };
   }
 
@@ -129,6 +137,27 @@ export class OrderService {
         await this.variantRepo.save(variant);
       });
     }
+    return {
+      status: 200,
+      message: 'Update success',
+      data: order,
+    };
+  }
+
+  async finishOrder(id: number) {
+    const exist = await this.ordersRepo.findOneBy({ id });
+    if (!exist) {
+      return {
+        status: 404,
+        message: 'Order not found.',
+      };
+    }
+    const order = await this.ordersRepo.save({
+      id,
+      orderStatus: OrderStatus.Delivered,
+      isPaid: true,
+      paidDate: new Date(),
+    });
     return {
       status: 200,
       message: 'Update success',
