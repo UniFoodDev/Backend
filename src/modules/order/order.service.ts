@@ -118,6 +118,45 @@ export class OrderService {
     };
   }
 
+  async countPrice(createOrderDto: CreateOrderDto) {
+    const { user, productArrayDTOWrapper, ...orderData } = createOrderDto;
+    let price = 0;
+
+    // Sử dụng Promise.all để đợi tất cả các truy vấn hoàn thành
+    await Promise.all(
+      productArrayDTOWrapper.map(async (item) => {
+        const product = await this.productRepo.findOne({
+          where: { id: item.product.id },
+        });
+        if (product.amount > 0 && product.amount > +item.product.count) {
+          const variant = await this.variantService.create(item);
+          price += +variant.price * +item.product.count;
+        } else {
+          throw new InternalServerErrorException(
+            'Product out of stock. Please try again later.',
+          );
+        }
+      }),
+    );
+
+    let ship = 0;
+    if (price >= 100000) {
+      ship = 0;
+    } else {
+      ship = 20000;
+    }
+
+    return {
+      status: 200,
+      message: 'Count price success',
+      data: {
+        totalPrice: price,
+        shippingCost: ship,
+      },
+    };
+  }
+
+  // To do : cần làm lại cập nhật số lượng sản phẩm sau khi hủy đơn hàng
   async updateOrderStatus(id: number, updateOrderStatus: UpdateOrderStatusDto) {
     const exist = await this.ordersRepo.findOneBy({ id });
     if (!exist) {
