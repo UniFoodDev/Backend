@@ -80,14 +80,15 @@ export class OrderService {
         const product = await this.productRepo.findOne({
           where: { id: item.product.id },
         });
-        if (product.amount > 0) {
-          totalProduct += 1;
-          product.amount -= 1;
+        if (product.amount > 0 && product.amount > +item.product.count) {
+          totalProduct += +item.product.count;
+          product.amount -= +item.product.count;
           await this.productRepo.save(product);
+          const orderedPri = +variant.price * +item.product.count;
           const orderItem = await this.orderItemsRepo.save({
             variant: variant,
             product: product,
-            orderedPrice: variant.price,
+            orderedPrice: orderedPri.toString(),
           });
           return orderItem;
         } else {

@@ -10,6 +10,9 @@ export class OrderItem {
   @Column({ nullable: true })
   orderedPrice: string;
 
+  @Column({ nullable: true })
+  quantity: string;
+
   @ManyToOne(() => Order, (order) => order.orderItems)
   public order!: Order;
 

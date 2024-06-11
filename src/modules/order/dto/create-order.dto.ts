@@ -12,6 +12,9 @@ import { OrderStatus, PaymentType } from '../../../enums';
 class ProductDto {
   @IsInt()
   id: number;
+
+  @IsString()
+  count: string;
 }
 
 class AttributeValueDto {
