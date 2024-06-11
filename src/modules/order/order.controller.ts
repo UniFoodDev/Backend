@@ -57,16 +57,12 @@ export class OrderController {
   }
 
   @UseInterceptors(CacheInterceptor)
-  @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
-  @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('create-order')
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.create(createOrderDto);
   }
 
   @UseInterceptors(CacheInterceptor)
-  @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
-  @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('order-price')
   orderPrice(@Body() createOrderDto: CreateOrderDto) {
     return this.orderService.countPrice(createOrderDto);
