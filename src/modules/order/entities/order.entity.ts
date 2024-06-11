@@ -25,6 +25,9 @@ export class Order extends AbstractEntity {
   @Column({ nullable: true })
   totalPrice: string;
 
+  @Column({ nullable: true })
+  totalQuantity: string;
+
   @Column({
     type: 'enum',
     nullable: false,

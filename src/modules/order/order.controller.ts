@@ -66,6 +66,25 @@ export class OrderController {
 
   @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
   @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('getOrder/by/:id')
+  findOrderById(@Param('id', ParseIntPipe) id: number) {
+    return this.orderService.getOrderById(id);
+  }
+
+  @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('user/get/order/byUserId')
+  findOrderByUserId(@Req() req) {
+    return this.orderService.getOrdersByUserId(req);
+  }
+
+  @Get('getAll/order/by/mobile/:phone')
+  findOrderByMobilePhone(@Param('phone') phone: string) {
+    return this.orderService.getOrdersByMobilePhone(phone);
+  }
+
+  @Roles(Role.Admin, Role.User, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

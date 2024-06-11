@@ -5,6 +5,7 @@ import {
   Inject,
   InternalServerErrorException,
   NotFoundException,
+  Req,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createHmac } from 'crypto';
@@ -72,6 +73,7 @@ export class OrderService {
       ...orderData,
       user: newUser,
     });
+    let totalProduct = 0;
     const orderItems = await Promise.all(
       createOrderDto.productArrayDTOWrapper.map(async (item) => {
         const variant = await this.variantService.create(item); // Sử dụng await để đợi kết quả trả về từ variantService.create
@@ -79,6 +81,7 @@ export class OrderService {
           where: { id: item.product.id },
         });
         if (product.amount > 0) {
+          totalProduct += 1;
           product.amount -= 1;
           await this.productRepo.save(product);
           const orderItem = await this.orderItemsRepo.save({
@@ -103,6 +106,7 @@ export class OrderService {
       ship = 20000;
     }
     order.shippingCost = ship.toString();
+    order.totalQuantity = totalProduct.toString();
     await this.ordersRepo.save(order);
     await this.cacheService.set(`order-${order.id}`, order);
     console.log(await this.cacheService.get(`order-${order.id}`));
@@ -402,6 +406,79 @@ export class OrderService {
     }
 
     return exist;
+  }
+
+  async getOrderById(id: number) {
+    const order = await this.ordersRepo.findOne({
+      where: { id },
+      relations: [
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.product',
+        'orderItems.variant.attributeValues',
+        'orderItems.variant.attributeValues.attribute',
+      ],
+    });
+    if (!order) {
+      return {
+        status: 404,
+        message: 'Order not found.',
+      };
+    }
+    return {
+      status: 200,
+      message: 'Get order success',
+      data: order,
+    };
+  }
+
+  async getOrdersByUserId(@Req() req) {
+    const userId = req.user.id;
+    const orders = await this.ordersRepo.find({
+      where: { user: { id: userId } },
+      relations: [
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.product',
+        'orderItems.variant.attributeValues',
+        'orderItems.variant.attributeValues.attribute',
+      ],
+    });
+    if (!orders) {
+      return {
+        status: 404,
+        message: 'Order not found.',
+      };
+    }
+    return {
+      status: 200,
+      message: 'Get order success',
+      data: orders,
+    };
+  }
+
+  getOrdersByMobilePhone(phone: string) {
+    const orders = this.ordersRepo.find({
+      where: { phone },
+      relations: [
+        'orderItems',
+        'orderItems.variant',
+        'orderItems.variant.product',
+        'orderItems.variant.attributeValues',
+        'orderItems.variant.attributeValues.attribute',
+      ],
+    });
+    if (!orders) {
+      return {
+        status: 404,
+        message: 'Order not found.',
+      };
+    }
+    return {
+      status: 200,
+      message: 'Get order success',
+      data: orders,
+    };
   }
 
   // async createMomoOrder(order) {
