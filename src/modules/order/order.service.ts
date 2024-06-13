@@ -530,6 +530,9 @@ export class OrderService {
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],
+      order: {
+        createdAt: 'DESC',
+      },
     });
     if (!orders) {
       return {
