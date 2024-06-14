@@ -117,4 +117,11 @@ export class UserController {
   ) {
     return this.userService.updateAddress(id, updateAddressDto);
   }
+
+  @UseGuards(AccessTokenGuard)
+  @Post('get/address/user/address')
+  getAddress(@Req() req) {
+    console.log(req);
+    return this.userService.getAddresses(req);
+  }
 }

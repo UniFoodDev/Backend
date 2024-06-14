@@ -35,6 +35,7 @@ export class UserService {
     @InjectRepository(Address)
     private addressRepository: Repository<Address>,
   ) {}
+
   async create(createUserDto: CreateUserDto) {
     const hashedPassword = await bcrypt.hash(
       createUserDto.password,
@@ -46,10 +47,12 @@ export class UserService {
       this.usersRepository.create(createUserDto as unknown as User),
     );
   }
+
   async save(user: User) {
     const userSave = await this.usersRepository.save(user);
     return userSave;
   }
+
   async createEmployee(createEmployeeDto: CreateEmployeeDto, req, res) {
     try {
       if (req.user.roles.includes(Role.Admin)) {
@@ -344,5 +347,25 @@ export class UserService {
       status: 200,
       message: 'Update success',
     }));
+  }
+
+  async getAddresses(@Req() req) {
+    try {
+      const getAddresses = await this.addressRepository.find({
+        where: {
+          user: req.user.userId,
+        },
+      });
+      return {
+        status: 200,
+        message: 'Success',
+        data: getAddresses,
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Internal server error',
+      };
+    }
   }
 }

@@ -19,7 +19,6 @@ import { Like, Raw, Repository } from 'typeorm';
 import { OrderStatus } from '../../enums';
 import { CreateOrderDto } from './dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
-// import { UpdateOrderDto } from './dto';
 import { Order } from './entities/order.entity';
 import { OrderItem } from './entities/orderItem.entity';
 import { AttributeValueVariant } from '../attribute-value/entities/attribute_value_variant.entity';
