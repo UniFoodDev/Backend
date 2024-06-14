@@ -54,4 +54,11 @@ export class OrderAdminController {
   async getMonthlyCostsAndRevenue(@Body() body: { year: string }) {
     return this.orderService.getMonthlyCostsAndRevenue(body.year);
   }
+
+  @Roles(Role.Admin, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('getOrder/by/:id')
+  findOrderById(@Param('id', ParseIntPipe) id: number) {
+    return this.orderService.getOrderById(id);
+  }
 }
