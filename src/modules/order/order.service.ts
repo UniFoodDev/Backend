@@ -52,6 +52,8 @@ export class OrderService {
     private variantService: VariantService,
     @Inject(CACHE_MANAGER)
     private cacheService: Cache,
+    @InjectRepository(OrderItem)
+    private orderItemRepo: Repository<OrderItem>,
   ) {}
   async create(createOrderDto: CreateOrderDto) {
     let newUser = createOrderDto.user;
@@ -454,10 +456,9 @@ export class OrderService {
       where: { id },
       relations: [
         'orderItems',
-        'orderItems.variant',
         'orderItems.variant.product',
-        'orderItems.variant.attributeValues',
-        'orderItems.variant.attributeValues.attribute',
+        'orderItems.variant.attributeValueVariant.attributeValue',
+        'user',
       ],
     });
     if (!order) {
@@ -479,10 +480,9 @@ export class OrderService {
       where: { user: { id: userId } },
       relations: [
         'orderItems',
-        'orderItems.variant',
         'orderItems.variant.product',
-        'orderItems.variant.attributeValues',
-        'orderItems.variant.attributeValues.attribute',
+        'orderItems.variant.attributeValueVariant.attributeValue',
+        'user',
       ],
     });
     if (!orders) {
@@ -503,10 +503,9 @@ export class OrderService {
       where: { phone },
       relations: [
         'orderItems',
-        'orderItems.variant',
         'orderItems.variant.product',
-        'orderItems.variant.attributeValues',
-        'orderItems.variant.attributeValues.attribute',
+        'orderItems.variant.attributeValueVariant.attributeValue',
+        'user',
       ],
     });
     if (!orders) {
@@ -544,6 +543,76 @@ export class OrderService {
       status: 200,
       message: 'Get order success',
       data: orders,
+    };
+  }
+
+  // tính tổng doanh thu, tổng đơn hàng và tổng sản phẩm đã bán
+  async getAllPriceAndOrder() {
+    try {
+      const { totalShippingCost, totalRevenue, totalOrder } =
+        await this.ordersRepo
+          .createQueryBuilder('order')
+          .select('SUM(CAST(order.totalPrice AS DECIMAL))', 'totalRevenue')
+          .addSelect(
+            'SUM(CAST(order.shippingCost AS DECIMAL))',
+            'totalShippingCost',
+          )
+          .addSelect('COUNT(order.id)', 'totalOrder')
+          .getRawOne();
+      return {
+        status: 200,
+        message: 'Get success',
+        data: {
+          totalShippingCost: totalShippingCost || 0,
+          totalRevenue: totalRevenue || 0,
+          totalOrder: totalOrder || 0,
+        },
+      };
+    } catch (e) {
+      return {
+        status: 500,
+        message: 'Internal server error',
+      };
+    }
+  }
+
+  async getBestSellingProduct() {
+    const top10BestSellingProducts = await this.orderItemRepo
+      .createQueryBuilder('orderItems')
+      .innerJoin('orderItems.variant', 'variant')
+      .innerJoin('variant.product', 'product')
+      .select('product.id', 'productId')
+      .addSelect('product.name', 'productName')
+      .addSelect('SUM(CAST(orderItems.quantity AS DECIMAL))', 'totalQuantity')
+      .groupBy('product.id')
+      .addGroupBy('product.name')
+      .orderBy('SUM(CAST(orderItems.quantity AS DECIMAL))', 'DESC')
+      .limit(10)
+      .getRawMany();
+
+    return {
+      status: 200,
+      message: 'Get success',
+      data: top10BestSellingProducts,
+    };
+  }
+
+  async getMonthlyCostsAndRevenue(year: string) {
+    const monthlyCostsAndRevenue = await this.ordersRepo
+      .createQueryBuilder('order')
+      .select([
+        'EXTRACT(MONTH FROM order.createdAt) AS month',
+        'SUM(CAST(order.shippingCost AS DECIMAL)) AS totalShippingCost',
+        'SUM(CAST(order.totalPrice AS DECIMAL)) AS totalRevenue',
+      ])
+      .where(`TO_CHAR(order.createdAt, 'YYYY') = :year`, { year })
+      .groupBy('month')
+      .orderBy('month')
+      .getRawMany();
+    return {
+      status: 200,
+      message: 'Monthly costs and revenue retrieved successfully',
+      data: monthlyCostsAndRevenue,
     };
   }
 }

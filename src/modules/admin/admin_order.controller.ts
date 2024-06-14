@@ -5,6 +5,7 @@ import {
   Body,
   ParseIntPipe,
   UseGuards,
+  Post,
 } from '@nestjs/common';
 import { OrderService } from '../order/order.service';
 import { UpdateOrderStatusDto } from '../order/dto';
@@ -31,5 +32,26 @@ export class OrderAdminController {
   @Get('getAllOrder')
   async getAllOrder() {
     return this.orderService.adminGetAllOrders();
+  }
+
+  @Roles(Role.Admin, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('getOrder/PriceAndOrder')
+  async getOrder() {
+    return this.orderService.getAllPriceAndOrder();
+  }
+
+  @Roles(Role.Admin, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Get('getOrder/product/getBestSellingProduct')
+  async getOrderById() {
+    return this.orderService.getBestSellingProduct();
+  }
+
+  @Roles(Role.Admin, Role.Manager, Role.Employee)
+  @UseGuards(AccessTokenGuard, RolesGuard)
+  @Post('monthlyCostsAndRevenue')
+  async getMonthlyCostsAndRevenue(@Body() body: { year: string }) {
+    return this.orderService.getMonthlyCostsAndRevenue(body.year);
   }
 }
