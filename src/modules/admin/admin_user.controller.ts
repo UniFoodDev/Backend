@@ -63,12 +63,16 @@ export class UserAdminController {
     );
   }
 
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @UseGuards(AccessTokenGuard)
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findOne(id);
   }
 
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Patch('update-account/:id')
   updateAccount(
     @Param('id', ParseIntPipe) id: number,
@@ -77,20 +81,27 @@ export class UserAdminController {
     return this.userService.updateAccount(id, updateAccountDto);
   }
 
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Post('update-user/:id')
   updateUser(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateUserDto: UpdateAccountDto,
     @Req() req,
+    @Res() res,
   ) {
-    return this.userService.updateUser(id, updateUserDto, req);
+    return this.userService.updateUser(id, updateUserDto, req, res);
   }
 
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
   }
 
+  @Roles(Role.Admin, Role.Manager)
+  @UseGuards(AccessTokenGuard, RolesGuard)
   @UseGuards(AccessTokenGuard)
   @Get('user/get/all/employee')
   getAllEmployee(@Req() req) {
