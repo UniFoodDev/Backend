@@ -1,4 +1,12 @@
-import { IsString, IsEnum, IsOptional, Length, Matches } from 'class-validator';
+import {
+  IsString,
+  IsEnum,
+  IsOptional,
+  Length,
+  Matches,
+  IsPhoneNumber,
+  IsEmail,
+} from 'class-validator';
 import { Role } from '../../../enums/role.enum';
 import { passwordRegex, usernameRegex } from '../../../libs/regex';
 
@@ -24,5 +32,9 @@ export class UpdateAccountDto {
   address: string;
 
   @IsString()
+  @IsPhoneNumber()
   phone: string;
+
+  @IsEmail()
+  email: string;
 }
