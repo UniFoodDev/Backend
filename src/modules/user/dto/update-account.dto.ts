@@ -2,39 +2,52 @@ import {
   IsString,
   IsEnum,
   IsOptional,
-  Length,
-  Matches,
-  IsPhoneNumber,
   IsEmail,
+  IsDate,
+  IsArray,
+  IsBoolean,
 } from 'class-validator';
 import { Role } from '../../../enums/role.enum';
-import { passwordRegex, usernameRegex } from '../../../libs/regex';
 
 export class UpdateAccountDto {
-  @Length(6, 32)
-  @Matches(usernameRegex, {
-    message:
-      'Username must contains at least 6 letter, no space, no special letters',
-  })
-  username: string;
-
-  @Length(6, 32)
-  @Matches(passwordRegex, {
-    message: 'Password must contains at least 1 number and uppercase letter',
-  })
-  password: string;
+  @IsOptional()
+  @IsString()
+  fullName?: string;
 
   @IsOptional()
-  @IsEnum(Role)
-  roles: Role[];
-
   @IsString()
-  address: string;
+  phone?: string;
 
+  @IsOptional()
   @IsString()
-  @IsPhoneNumber()
-  phone: string;
+  address?: string;
 
+  @IsOptional()
   @IsEmail()
-  email: string;
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  username?: string;
+
+  @IsOptional()
+  @IsString()
+  password?: string;
+
+  @IsOptional()
+  @IsString()
+  passwordCode?: string;
+
+  @IsOptional()
+  @IsDate()
+  passwordCodeExpired?: Date;
+
+  @IsOptional()
+  @IsArray()
+  @IsEnum(Role, { each: true })
+  roles?: Role[];
+
+  @IsOptional()
+  @IsBoolean()
+  isAccountBanned?: boolean;
 }
