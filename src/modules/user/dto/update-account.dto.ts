@@ -1,11 +1,11 @@
 import {
   IsString,
   IsEnum,
-  IsOptional,
   IsEmail,
   IsDate,
   IsArray,
   IsBoolean,
+  IsOptional,
 } from 'class-validator';
 import { Role } from '../../../enums/role.enum';
 

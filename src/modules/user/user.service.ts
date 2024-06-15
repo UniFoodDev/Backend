@@ -304,10 +304,9 @@ export class UserService {
         };
       }
       const userRoles = req.user.roles;
-      console.log(userRoles);
       const isAdmin = userRoles.includes(Role.Admin);
       const isManager = userRoles.includes(Role.Manager);
-      const isEmployeeRole = updateUserDto.roles.includes(Role.Employee);
+      const isEmployeeRole = exist.roles.includes(Role.Employee);
 
       if (isAdmin) {
         await this.usersRepository.update(id, updateUserDto);
