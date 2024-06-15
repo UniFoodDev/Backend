@@ -234,6 +234,20 @@ export class UserService {
     }
     return user;
   }
+  async findEmployee(id: number) {
+    const exist = await this.usersRepository.findOneBy({ id });
+    if (!exist) {
+      return {
+        status: 404,
+        message: 'Not found.',
+      };
+    }
+    return {
+      status: 200,
+      message: 'Success',
+      exist,
+    };
+  }
 
   async findAllUser(@Req() req) {
     const roles = req.user.roles;

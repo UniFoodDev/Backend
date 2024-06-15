@@ -37,14 +37,15 @@ export class VariantService {
       (acc, item) => acc + +item.price,
       0,
     );
-
     // Lấy thông tin của sản phẩm từ cơ sở dữ liệu
     const productInfo = await this.productRepo.findOneBy({
       id: product.id,
     });
 
     // Tính tổng giá của biến thể sản phẩm bằng cách cộng giá trị của các thuộc tính với giá của sản phẩm
-    const price = totalAttributeValuePrice + +productInfo.price;
+    const price =
+      totalAttributeValuePrice +
+      +productInfo.price * (1 - +productInfo.discount / 100);
 
     // Lưu các biến thể của thuộc tính vào cơ sở dữ liệu
     await this.attributeValueVariantRepo.save(attributeValueVariant);

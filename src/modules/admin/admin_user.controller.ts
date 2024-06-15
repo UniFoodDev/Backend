@@ -96,4 +96,10 @@ export class UserAdminController {
   getAllEmployee(@Req() req) {
     return this.userService.findAllUser(req);
   }
+
+  @UseGuards(AccessTokenGuard)
+  @Get('user/get/user/employee/:id')
+  getCustomer(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.findEmployee(id);
+  }
 }
