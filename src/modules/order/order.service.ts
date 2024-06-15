@@ -77,7 +77,7 @@ export class OrderService {
     let totalProduct = 0;
     const orderItems = await Promise.all(
       createOrderDto.productArrayDTOWrapper.map(async (item) => {
-        const variant = await this.variantService.create(item); // Sử dụng await để đợi kết quả trả về từ variantService.create
+        const variant = await this.variantService.create(item);
         const product = await this.productRepo.findOne({
           where: { id: item.product.id },
         });
