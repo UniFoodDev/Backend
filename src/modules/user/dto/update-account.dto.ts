@@ -1,9 +1,8 @@
-import { IsEnum, IsOptional, Length, Matches } from 'class-validator';
+import { IsString, IsEnum, IsOptional, Length, Matches } from 'class-validator';
 import { Role } from '../../../enums/role.enum';
 import { passwordRegex, usernameRegex } from '../../../libs/regex';
 
 export class UpdateAccountDto {
-  @IsOptional()
   @Length(6, 32)
   @Matches(usernameRegex, {
     message:
@@ -11,7 +10,6 @@ export class UpdateAccountDto {
   })
   username: string;
 
-  @IsOptional()
   @Length(6, 32)
   @Matches(passwordRegex, {
     message: 'Password must contains at least 1 number and uppercase letter',
@@ -19,6 +17,12 @@ export class UpdateAccountDto {
   password: string;
 
   @IsOptional()
-  @IsEnum(Role, { each: true })
+  @IsEnum(Role)
   roles: Role[];
+
+  @IsString()
+  address: string;
+
+  @IsString()
+  phone: string;
 }
