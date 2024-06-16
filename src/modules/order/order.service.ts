@@ -465,6 +465,7 @@ export class OrderService {
       relations: [
         'orderItems',
         'orderItems.variant.product',
+        'orderItems.variant.product.images',
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],
@@ -489,6 +490,7 @@ export class OrderService {
       relations: [
         'orderItems',
         'orderItems.variant.product',
+        'orderItems.variant.product.images',
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],
@@ -512,6 +514,7 @@ export class OrderService {
       relations: [
         'orderItems',
         'orderItems.variant.product',
+        'orderItems.variant.product.images',
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],
@@ -534,6 +537,7 @@ export class OrderService {
       relations: [
         'orderItems',
         'orderItems.variant.product',
+        'orderItems.variant.product.images',
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],

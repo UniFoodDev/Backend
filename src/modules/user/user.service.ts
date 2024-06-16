@@ -388,4 +388,19 @@ export class UserService {
       };
     }
   }
+
+  async deleteAddress(id: number) {
+    const exist = await this.addressRepository.findOneBy({ id });
+    if (!exist) {
+      return {
+        status: 404,
+        message: 'Not found.',
+      };
+    }
+    await this.addressRepository.delete(id);
+    return {
+      status: 200,
+      message: 'Success',
+    };
+  }
 }

@@ -11,6 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
   Put,
+  Delete,
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Roles } from '../../decorator/role.decorator';
@@ -123,5 +124,11 @@ export class UserController {
   getAddress(@Req() req) {
     console.log(req);
     return this.userService.getAddresses(req);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Delete('delete/address/:id')
+  deleteAddress(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.deleteAddress(id);
   }
 }
