@@ -173,18 +173,22 @@ export class OrderService {
       isPaid: updateOrderStatus.isPaid,
       paidDate: updateOrderStatus.paidDate,
     });
+    const orderItems = await this.orderItemsRepo.find({
+      where: { order: { id } },
+      relations: ['variant'],
+    });
     if (order.orderStatus === OrderStatus.Cancel) {
-      const orderItems = await this.orderItemsRepo.find({
-        where: { order: { id } },
-        relations: ['variant'],
-      });
       await Promise.all(
         orderItems.map(async (item) => {
-          const product = await this.productRepo.findOne({
-            where: { id: item.variant.product.id },
+          const variant = await this.variantRepo.findOne({
+            where: { id: item.variant.id },
+            relations: ['product'],
           });
-          product.amount += +item.quantity;
-          await this.productRepo.save(product);
+          const products = variant.product;
+          if (products) {
+            products.amount += +item.quantity;
+            await this.productRepo.save(products);
+          }
         }),
       );
     }
