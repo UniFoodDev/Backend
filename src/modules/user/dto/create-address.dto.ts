@@ -11,6 +11,6 @@ export class CreateAddressDto {
   @IsString()
   home: string;
 
-  @IsPhoneNumber()
+  @IsString()
   phone: string;
 }
