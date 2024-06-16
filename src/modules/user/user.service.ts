@@ -350,7 +350,12 @@ export class UserService {
   }
 
   async createAdress(createAddressDto: CreateAddressDto, @Req() req) {
-    const user = await this.usersRepository.findOne(req.user.userId);
+    console.log(req.user.userId);
+    const user = await this.usersRepository.findOne({
+      where: {
+        id: req.user.userId,
+      },
+    });
     const address = await this.addressRepository.create({
       ...createAddressDto,
       user: user,

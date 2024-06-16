@@ -1,5 +1,5 @@
 // address.dto.ts
-import { IsString, IsPhoneNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 // lam nhu shoppee
 export class CreateAddressDto {
   @IsString()

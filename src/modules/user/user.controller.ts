@@ -62,6 +62,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @Roles(Role.Admin, Role.Manager, Role.Employee, Role.User)
   @Put('update-account')
   update(@Req() req, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(req, updateUserDto);
@@ -111,6 +112,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @Roles(Role.Admin, Role.Manager, Role.Employee, Role.User)
   @Put('update/address/:id')
   updateAddress(
     @Param('id', ParseIntPipe) id: number,
@@ -120,6 +122,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @Roles(Role.Admin, Role.Manager, Role.Employee, Role.User)
   @Post('get/address/user/address')
   getAddress(@Req() req) {
     console.log(req);
@@ -127,6 +130,7 @@ export class UserController {
   }
 
   @UseGuards(AccessTokenGuard)
+  @Roles(Role.Admin, Role.Manager, Role.Employee, Role.User)
   @Delete('delete/address/:id')
   deleteAddress(@Param('id', ParseIntPipe) id: number) {
     return this.userService.deleteAddress(id);
