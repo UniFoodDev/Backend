@@ -230,6 +230,12 @@ export class UserService {
     if (!exist) {
       throw new NotFoundException('User not found.');
     }
+    if (exist.roles.includes(Role.Admin)) {
+      return {
+        status: 403,
+        message: 'Forbidden',
+      };
+    }
     return this.usersRepository.delete(id).then(() => ({
       statusCode: HttpStatus.OK,
       message: 'Delete success',

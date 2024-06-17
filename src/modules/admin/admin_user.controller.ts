@@ -95,7 +95,7 @@ export class UserAdminController {
 
   @Roles(Role.Admin, Role.Manager)
   @UseGuards(AccessTokenGuard, RolesGuard)
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.userService.remove(id);
   }
