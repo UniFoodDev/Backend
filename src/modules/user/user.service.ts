@@ -57,6 +57,15 @@ export class UserService {
 
   async createEmployee(createEmployeeDto: CreateEmployeeDto, req, res) {
     try {
+      const user1 = await this.usersRepository.findOneBy({
+        email: createEmployeeDto.email,
+      });
+      if (user1) {
+        return res.status(401).json({
+          status: 401,
+          message: 'Email already exists',
+        });
+      }
       if (req.user.roles.includes(Role.Admin)) {
         const exist = await this.usersRepository.findOneBy({
           username: createEmployeeDto.username,
