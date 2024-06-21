@@ -389,18 +389,21 @@ export class UserService {
     }));
   }
 
-  async getAddresses(@Req() req) {
+  async getAddresses(@Req() req, @Res() res) {
     try {
-      const getAddresses = await this.addressRepository.find({
+      console.log(req.user.userId);
+      const user = await this.usersRepository.findOne({
         where: {
-          user: req.user.userId,
+          id: req.user.userId,
         },
+        relations: ['addresses'],
       });
-      return {
+      const addresses = user.addresses;
+      return res.status(200).json({
         status: 200,
         message: 'Success',
-        data: getAddresses,
-      };
+        data: addresses,
+      });
     } catch (error) {
       return {
         status: 500,

@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   Put,
   Delete,
+  Res,
 } from '@nestjs/common';
 import { Pagination } from 'nestjs-typeorm-paginate';
 import { Roles } from '../../decorator/role.decorator';
@@ -124,9 +125,9 @@ export class UserController {
   @UseGuards(AccessTokenGuard)
   @Roles(Role.Admin, Role.Manager, Role.Employee, Role.User)
   @Post('get/address/user/address')
-  getAddress(@Req() req) {
+  getAddress(@Req() req, @Res() res) {
     console.log(req);
-    return this.userService.getAddresses(req);
+    return this.userService.getAddresses(req, res);
   }
 
   @UseGuards(AccessTokenGuard)
