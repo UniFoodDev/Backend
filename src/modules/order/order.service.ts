@@ -484,9 +484,10 @@ export class OrderService {
   }
 
   async getOrdersByUserId(@Req() req) {
-    const userId = req.user.id;
+    const id = req.user.userId;
+    console.log(id);
     const orders = await this.ordersRepo.find({
-      where: { user: { id: userId } },
+      where: { user: { id: id } },
       relations: [
         'orderItems',
         'orderItems.variant.product',
@@ -494,6 +495,9 @@ export class OrderService {
         'orderItems.variant.attributeValueVariant.attributeValue',
         'user',
       ],
+      order: {
+        createdAt: 'DESC',
+      },
     });
     if (!orders) {
       return {
